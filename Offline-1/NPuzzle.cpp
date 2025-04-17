@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "Node.cpp"
-#include "NPuzzle.h"
+#include "Heuristic.cpp"
 using namespace std;
 
 class NPuzzle
@@ -8,7 +8,7 @@ class NPuzzle
     int k;
     vector<vector<int>> initialBoard;
     vector<vector<int>> goalBoard;
-    string heuristicFunction;
+    Heuristic heuristicFunction;
     shared_ptr<Node> initialNode;
 
 public:
@@ -25,9 +25,9 @@ public:
         return initialBoard;
     }
 
-    void setHeuristicFunction(string heuristicFunction)
+    void setHeuristicFunction(Heuristic heuristic)
     {
-        this->heuristicFunction = heuristicFunction;
+        this->heuristicFunction = heuristic;
     }
 
     vector<vector<int>> getGoalBoard()
@@ -93,23 +93,37 @@ public:
         int exploredNodes = 0;
         int expandedNodes = 0;
 
-        auto comparator = [&](Node &a, Node &b) {
-            if (heuristicFunction == "Hamming")
+        auto comparator = [&](Node &a, Node &b)
+        {
+            int f_a, f_b;
+
+            switch (heuristicFunction)
             {
-                return a.getHammingDistance() + a.getMoves() > b.getHammingDistance() + b.getMoves();
+            case Heuristic::Hamming:
+                f_a = a.getHammingDistance() + a.getMoves();
+                f_b = b.getHammingDistance() + b.getMoves();
+                break;
+
+            case Heuristic::Manhattan:
+                f_a = a.getManhattanDistance() + a.getMoves();
+                f_b = b.getManhattanDistance() + b.getMoves();
+                break;
+
+            case Heuristic::Euclidean:
+                f_a = a.getEuclideanDistance() + a.getMoves();
+                f_b = b.getEuclideanDistance() + b.getMoves();
+                break;
+
+            case Heuristic::LinearConflict:
+                f_a = a.getLinearConflict() + a.getMoves();
+                f_b = b.getLinearConflict() + b.getMoves();
+                break;
+
+            default:
+                f_a = f_b = 0;
             }
-            else if (heuristicFunction == "Manhattan")
-            {
-                return a.getManhattanDistance() + a.getMoves() > b.getManhattanDistance() + b.getMoves();
-            }
-            else if (heuristicFunction == "Euclidean")
-            {
-                return a.getEuclideanDistance() + a.getMoves() > b.getEuclideanDistance() + b.getMoves();
-            }
-            else
-            {
-                return a.getLinearConflict() + a.getMoves() > b.getLinearConflict() + b.getMoves();
-            }
+
+            return f_a > f_b;
         };
 
         priority_queue<Node, vector<Node>, decltype(comparator)> openList(comparator);
