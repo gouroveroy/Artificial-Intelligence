@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     int exploredNodes = nodeCounts.first;
     int expandedNodes = nodeCounts.second;
 
-    cout << "Minimum number of moves = " << solutionNode.getMoves() << endl;
+    cout << "Minimum number of moves = " << solutionNode.getMoves() << endl << endl;
 
     solutionNode.printPath();
 
