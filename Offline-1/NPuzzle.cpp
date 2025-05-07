@@ -73,34 +73,33 @@ public:
             return {Node(emptyBoard, -1, nullptr), {0, 0}};
         }
 
-        
         auto comparator = [&](Node &a, Node &b)
         {
             double g_a = a.getMoves();
             double g_b = b.getMoves();
-            
+
             auto boardCopyA = a.getBoard();
             auto boardCopyB = b.getBoard();
-            
+
             double h_a = heuristicFunction(boardCopyA, goalBoard);
             double h_b = heuristicFunction(boardCopyB, goalBoard);
-            
+
             double f_a = g_a + h_a;
             double f_b = g_b + h_b;
-            
+
             if (f_a == f_b)
             {
                 return h_a > h_b;
             }
-            
+
             return f_a > f_b;
         };
-        
+
         priority_queue<Node, vector<Node>, decltype(comparator)> openList(comparator);
         unordered_map<string, int> closedList;
-        
+
         openList.push(*initialNode);
-        
+
         int exploredNodes = 1;
         int expandedNodes = 0;
         while (!openList.empty())
@@ -116,7 +115,7 @@ public:
 
             closedList[boardString] = currentNode.getMoves();
             openList.pop();
-            
+
             if (currentNode.isGoalState())
             {
                 return {currentNode, {exploredNodes, expandedNodes}};

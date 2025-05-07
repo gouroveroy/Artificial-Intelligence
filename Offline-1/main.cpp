@@ -12,15 +12,15 @@ int main(int argc, char *argv[])
     }
 
     int k = 3;
-    vector<vector<int>> initialBoard = {
-        {1, 5, 0},
-        {7, 6, 4},
-        {2, 3, 8}};
-
     if (argc > 2)
     {
         k = atoi(argv[2]);
-        initialBoard.resize(k, vector<int>(k, 0));
+    }
+
+    vector<vector<int>> initialBoard(k, vector<int>(k, 0));
+
+    if (argc > 3)
+    {
         for (int i = 0; i < k; i++)
         {
             for (int j = 0; j < k; j++)
@@ -30,10 +30,23 @@ int main(int argc, char *argv[])
         }
     }
 
-    vector<vector<int>> goalBoard = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 0}};
+    vector<vector<int>> goalBoard(k, vector<int>(k, 0));
+
+    int g = 0;
+    for (int i = 0; i < k; i++)
+    {
+        for (int j = 0; j < k; j++)
+        {
+            if (g == k * k - 1)
+            {
+                goalBoard[i][j] = 0;
+            }
+            else
+            {
+                goalBoard[i][j] = ++g;
+            }
+        }
+    }
 
     NPuzzle puzzle(k, initialBoard, goalBoard);
     puzzle.setHeuristicFunction(heuristicFunction);
