@@ -1,0 +1,7 @@
+,Problem,,,Constructive Algorithm,,,Local Search,GRASP,,Known Best Solution or Upper Bound
+Name,|V| or n,|E| or m,Simple Randomized or Randomized-1,Simple Greedy or Greedy-1,Semi-greedy-1(alpha = 0.5),Simple local or local-1,,GRASP-1(iterations = 50)
+,,,,,,No. of iterations,Average value,No. of iterations, Best value,
+G1,800,19176,9587,10949,11121,19176,11277,50,11461,12078
+G2,800,19176,9590,11050,11184,19176,11389,50,11454,12084
+G3,800,19176,9587,11015,11160,19176,11312,50,11496,12077
+G4,800,19176,9582,11059
