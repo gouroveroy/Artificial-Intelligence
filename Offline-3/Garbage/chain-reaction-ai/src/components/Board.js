@@ -3,6 +3,7 @@ import React from 'react';
 import Cell from './Cell';
 
 export default function Board({ boardData, onCellClick, isDisabled }) {
+    // Guard: if boardData is not ready, show nothing or a loading message
     if (!Array.isArray(boardData)) {
         return <div style={{ color: "#fff", textAlign: "center" }}>Loading board...</div>;
     }
@@ -11,13 +12,8 @@ export default function Board({ boardData, onCellClick, isDisabled }) {
         display: 'grid',
         gridTemplateRows: 'repeat(9, 60px)',
         gridTemplateColumns: 'repeat(6, 60px)',
-        gap: '1px',
-        margin: '2.5px auto',
-        border: '2px rgba(10, 70, 129, 0.3)',
-        borderRadius: '16px',
-        boxShadow: 'inset 0 0 10px rgba(0, 100, 200, 0.3), 0 8px 32px rgba(0, 100, 200, 0.25)',
-        background: 'linear-gradient(135deg,rgb(13, 144, 237),rgb(124, 208, 248))',
-        overflow: 'hidden'
+        gap: '2px',
+        margin: '20px auto',
     };
 
     return (

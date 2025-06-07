@@ -1,191 +1,235 @@
-// File: src/pages/index.js
-import { useEffect, useState } from 'react';
-import Board from '../components/Board';
+import Link from 'next/link';
+import { useState } from 'react';
 
-export default function HomePage() {
-  const [board, setBoard] = useState(
-    Array(9)
-      .fill(null)
-      .map(() =>
-        Array(6)
-          .fill(null)
-          .map(() => ({ count: 0, color: null }))
-      )
-  );
-  const [header, setHeader] = useState('Human Move:');
-  const [isDisabled, setIsDisabled] = useState(true);
-  const [message, setMessage] = useState('');
+export default function Home() {
+  const [hovered, setHovered] = useState({ game: false, about: false, aivsai: false });
+  const [showGameOptions, setShowGameOptions] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function fetchInitial() {
-      const resp = await fetch('/api/read-state');
-      const data = await resp.json();
-      setHeader(data.header);
-      setBoard(data.board);
-      setIsDisabled(data.header !== 'AI Move:');
-    }
-    fetchInitial();
-  }, []);
-
-  // useEffect(() => {
-  //   const interval = setInterval(async () => {
-  //     try {
-  //       const resp = await fetch('/api/read-state');
-  //       const data = await resp.json();
-  //       setHeader(data.header);
-  //       setBoard(data.board);
-  //       setIsDisabled(data.header !== 'AI Move:');
-  //     } catch { }
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  async function animateFrames(frames) {
-    for (const frame of frames) {
-      setBoard(frame);
-      await new Promise((r) => setTimeout(r, 250));
-    }
-  }
-
-  async function handleCellClick(r, c) {
-    if (isDisabled) return;
-    setIsDisabled(true);
-
-    const resp = await fetch('/api/compute-ai-move', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ humanMove: { row: r, col: c } }),
-    });
-    const result = await resp.json();
-    if (resp.status !== 200) {
-      alert('Invalid move or server error: ' + JSON.stringify(result));
-      setIsDisabled(false);
-      return;
-    }
-
-    // Animate human move
-    await animateFrames(result.humanFrames);
-
-    if (result.aiMove === null && checkBoardWinner(result.humanFrames.at(-1)) === 'R') {
-      setMessage('Congratulations! You (Red) have won!');
-      setIsDisabled(true);
-      return;
-    }
-
-    if (result.aiMove === null && !result.aiWon) {
-      setMessage('Congratulations! You (Red) have won! (AI had no moves)');
-      setIsDisabled(true);
-      return;
-    }
-
-    if (result.aiWon) {
-      await animateFrames(result.aiFrames);
-      setMessage('AI (Blue) has won. Better luck next time!');
-      setIsDisabled(true);
-      return;
-    }
-
-    // Animate AI move
-    await new Promise((r) => setTimeout(r, 500));
-    await animateFrames(result.aiFrames);
-    setIsDisabled(false);
-  }
-
-  function checkBoardWinner(bd) {
-    let hasR = false;
-    let hasB = false;
-    for (const rowArr of bd) {
-      for (const cell of rowArr) {
-        if (cell.count > 0) {
-          if (cell.color === 'R') hasR = true;
-          if (cell.color === 'B') hasB = true;
-        }
-        if (hasR && hasB) return null;
-      }
-    }
-    if (hasR && !hasB) return 'R';
-    if (hasB && !hasR) return 'B';
-    return null;
+  async function handleStartNewGame() {
+    setLoading(true);
+    await fetch('/api/reset', { method: 'POST' });
+    setLoading(false);
+    window.location.href = '/game';
   }
 
   return (
     <div
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg,rgb(26, 131, 183) 0%,rgb(9, 52, 95) 100%)',
-        textAlign: 'center',
-        paddingTop: '40px',
-        cursor: isDisabled ? 'wait' : 'default',
+        background: 'linear-gradient(135deg, #1a83b7 0%, #09345f 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: '60px',
+        fontFamily: 'Segoe UI, sans-serif',
       }}
     >
-      <h1 style={{ color: '#fff', letterSpacing: '2px', marginBottom: '10px' }}>
-        Chain Reaction =&gt; You(Red) vs AI(Blue)
+      <h1 style={{
+        fontSize: '3.2rem',
+        color: '#00FFFF',
+        fontWeight: 900,
+        letterSpacing: '2px',
+        textShadow: '0 0 16px rgba(199, 255, 59, 0.7)',
+        marginBottom: '32px',
+        textAlign: 'center',
+      }}>
+        Chain Reaction AI
       </h1>
-      {message && <h2 style={{ color: '#ffeb3b' }}>{message}</h2>}
-      {!message && (
-        <h2 style={{ color: '#90caf9' }}>
-          {header === 'AI Move:' ? "Your Turn (Red)" : "AI's Turn (Blue)"}
-        </h2>
-      )}
-      <div
-        style={{
-          display: 'inline-block',
-          background: '#96DED1',
-          borderRadius: '16px',
-          boxShadow: '0 8px 32px 0 rgba(100, 101, 122, 0.37)',
-          padding: '32px 24px',
-          margin: '32px 0',
-          position: 'relative',
-        }}
-      >
-        <Board boardData={board} onCellClick={handleCellClick} isDisabled={isDisabled} />
-        <button
-          style={{
-            position: 'absolute',
-            top: '20%',
-            right: '-200px',
-            transform: 'translateY(-50%)',
-            padding: '8px 24px',
-            fontSize: '1rem',
-            borderRadius: '8px',
-            border: 'none',
-            background: '#388e3c',
-            color: '#fff',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(56, 142, 60, 0.2)',
-            marginRight: '12px',
-            display: message ? 'none' : 'inline-block',
-            minWidth: '120px',
-          }}
-          onClick={async () => {
-            await fetch('/api/reset', { method: 'POST' });
-            window.location.reload();
-          }}
-        >
-          Reset Game
-        </button>
+
+      <div style={{ textAlign: 'center', marginBottom: '280px' }}>
+        <h1 style={{
+          fontSize: '2.6rem',
+          color: '#fff',
+          fontWeight: 700,
+          letterSpacing: '1px',
+          textShadow: '0 0 8px rgba(255, 235, 59, 0.6)',
+        }}>
+          Developed by{' '}
+          <span style={{
+            color: '#C71585',
+            fontWeight: 900,
+            textShadow: '0 0 12px rgba(255, 235, 59, 0.9)',
+          }}>
+            Gourove Roy
+          </span>
+        </h1>
+        <p style={{
+          fontSize: '1.3rem',
+          fontStyle: 'italic',
+          color: '#b3e5fc',
+          marginTop: '12px',
+        }}>
+          “Unleash the chain, ignite the reaction —<br />
+          Outsmart the AI in this explosive strategy game.”
+        </p>
       </div>
-      {message ? (
+
+      <div style={{
+        display: 'flex',
+        gap: '50px',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        marginBottom: '500px',
+      }}>
         <button
           style={{
-            marginTop: '24px',
-            padding: '10px 28px',
-            fontSize: '1.1rem',
-            borderRadius: '8px',
-            border: 'none',
-            background: '#1976d2',
+            background: 'linear-gradient(90deg, #43cea2 0%, #185a9d 100%)',
             color: '#fff',
+            fontSize: '1.5rem',
+            padding: '20px 48px',
+            borderRadius: '14px',
+            textAlign: 'center',
+            textDecoration: 'none',
+            fontWeight: 700,
+            boxShadow: hovered.game
+              ? '0 10px 40px rgba(67, 206, 162, 0.4)'
+              : '0 6px 24px rgba(67, 206, 162, 0.2)',
+            transform: hovered.game ? 'scale(1.08) translateY(-4px)' : 'scale(1)',
+            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
             cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(25, 118, 210, 0.2)',
+            minWidth: 180,
+            border: 'none',
           }}
-          onClick={async () => {
-            await fetch('/api/reset', { method: 'POST' });
-            window.location.reload();
-          }}
+          onMouseEnter={() => setHovered(h => ({ ...h, game: true }))}
+          onMouseLeave={() => setHovered(h => ({ ...h, game: false }))}
+          onClick={() => setShowGameOptions(true)}
         >
-          Play Again
+          🎮 Human vs AI
         </button>
-      ) : null}
+
+        <Link
+          href="/ai-vs-ai"
+          style={{
+            background: 'linear-gradient(90deg, #8e2de2 0%, #4a00e0 100%)',
+            color: '#fff',
+            fontSize: '1.5rem',
+            padding: '20px 48px',
+            borderRadius: '14px',
+            textAlign: 'center',
+            textDecoration: 'none',
+            fontWeight: 700,
+            boxShadow: hovered.aivsai
+              ? '0 10px 40px rgba(142, 45, 226, 0.4)'
+              : '0 6px 24px rgba(142, 45, 226, 0.2)',
+            transform: hovered.aivsai ? 'scale(1.08) translateY(-4px)' : 'scale(1)',
+            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+            cursor: 'pointer',
+            minWidth: 180,
+            marginLeft: 0,
+          }}
+          onMouseEnter={() => setHovered(h => ({ ...h, aivsai: true }))}
+          onMouseLeave={() => setHovered(h => ({ ...h, aivsai: false }))}
+        >
+          🤖 AI vs AI
+        </Link>
+
+        <Link
+          href="/about"
+          style={{
+            background: 'linear-gradient(90deg, #f7971e 0%, #ffd200 100%)',
+            color: '#222',
+            fontSize: '1.5rem',
+            padding: '20px 48px',
+            borderRadius: '14px',
+            textAlign: 'center',
+            textDecoration: 'none',
+            fontWeight: 700,
+            boxShadow: hovered.about
+              ? '0 10px 40px rgba(255, 210, 0, 0.4)'
+              : '0 6px 24px rgba(255, 210, 0, 0.2)',
+            transform: hovered.about ? 'scale(1.08) translateY(-4px)' : 'scale(1)',
+            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+            cursor: 'pointer',
+            minWidth: 180,
+          }}
+          onMouseEnter={() => setHovered(h => ({ ...h, about: true }))}
+          onMouseLeave={() => setHovered(h => ({ ...h, about: false }))}
+        >
+          📘 About Game
+        </Link>
+      </div>
+
+      {showGameOptions && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.45)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+        }}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '18px',
+            padding: '40px 32px',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
+            minWidth: 320,
+            textAlign: 'center',
+          }}>
+            <h2 style={{ color: '#1976d2', marginBottom: 24 }}>Select</h2>
+            <button
+              style={{
+                background: '#43cea2',
+                color: '#fff',
+                fontSize: '1.2rem',
+                padding: '12px 32px',
+                borderRadius: '10px',
+                border: 'none',
+                margin: '0 0 18px 0',
+                fontWeight: 700,
+                cursor: loading ? 'wait' : 'pointer',
+                width: '100%',
+                marginBottom: 16,
+                transition: 'background 0.2s',
+              }}
+              disabled={loading}
+              onClick={handleStartNewGame}
+            >
+              {loading ? 'Resetting...' : 'Start New Game'}
+            </button>
+            <br />
+            <button
+              style={{
+                background: '#1976d2',
+                color: '#fff',
+                fontSize: '1.2rem',
+                padding: '12px 32px',
+                borderRadius: '10px',
+                border: 'none',
+                fontWeight: 700,
+                cursor: 'pointer',
+                width: '100%',
+                marginBottom: 16,
+                transition: 'background 0.2s',
+              }}
+              onClick={() => window.location.href = '/game'}
+            >
+              Back to Previous Game
+            </button>
+            <br />
+            <button
+              style={{
+                background: '#bdbdbd',
+                color: '#333',
+                fontSize: '1rem',
+                padding: '8px 24px',
+                borderRadius: '8px',
+                border: 'none',
+                fontWeight: 600,
+                cursor: 'pointer',
+                width: '100%',
+                marginTop: 8,
+              }}
+              onClick={() => setShowGameOptions(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
