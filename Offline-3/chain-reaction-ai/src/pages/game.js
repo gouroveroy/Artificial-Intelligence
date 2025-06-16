@@ -1,31 +1,35 @@
-// File: src/pages/index.js
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Board from '../components/Board';
 import Link from 'next/link';
+import confetti from 'canvas-confetti';
 
 export default function HomePage() {
-    const [board, setBoard] = useState(
-        Array(9).fill(null).map(() =>
-            Array(6).fill(null).map(() => ({ count: 0, color: null }))
-        )
-    );
+    const router = useRouter();
+    const { rows = 9, cols = 6 } = router.query;
+
+    const [board, setBoard] = useState(null);
     const [header, setHeader] = useState(false);
     const [isDisabled, setIsDisabled] = useState(true);
     const [message, setMessage] = useState('');
     const [orbCounts, setOrbCounts] = useState({ R: 0, B: 0 });
     const [showResetConfirm, setShowResetConfirm] = useState(false);
-    const [turn, setTurn] = useState(1); // track turn number
+    const [turn, setTurn] = useState(1);
+
+    // Add AI config state
+    const [aiDepth, setAiDepth] = useState(2);
+    const [aiHeuristic, setAiHeuristic] = useState(0);
 
     useEffect(() => {
         async function fetchInitial() {
-            const resp = await fetch('/api/read-state');
-            const data = await resp.json();
+            let resp = await fetch('/api/read-state');
+            let data = await resp.json();
             setBoard(data.board);
             setIsDisabled(data.header !== 'AI Move:');
             updateOrbCounts(data.board);
         }
-        fetchInitial();
-    }, []);
+        if (!board && rows && cols) fetchInitial();
+    }, [board, rows, cols]);
 
     function updateOrbCounts(board) {
         let red = 0, blue = 0;
@@ -53,7 +57,7 @@ export default function HomePage() {
         const resp = await fetch('/api/compute-ai-move', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ humanMove: { row: r, col: c } })
+            body: JSON.stringify({ humanMove: { row: r, col: c }, aiDepth, aiHeuristic })
         });
 
         const result = await resp.json();
@@ -65,18 +69,46 @@ export default function HomePage() {
 
         await animateFrames(result.humanFrames);
         setHeader(true);
-        setTurn(t => t + 1); // increment turn
+        setTurn(t => t + 1);
 
         if (result.aiMove === null && !result.aiWon) {
-            setMessage('Congratulations! You (Red) have won! (AI had no moves)');
+            setMessage('🎉 Congratulations! You (Red) have won! (AI had no moves)');
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
             setIsDisabled(true);
+            // Log summary for human win
+            fetch('/api/log-summary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    mode: 'human-vs-ai',
+                    winner: 'Red',
+                    blueAgent: {
+                        depth: aiDepth,
+                        heuristic: aiHeuristic
+                    }
+                })
+            });
             return;
         }
 
         if (result.aiWon) {
             await animateFrames(result.aiFrames);
-            setMessage('AI (Blue) has won. Better luck next time!');
+            setMessage('😞 AI (Blue) has won. Better luck next time!');
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.8 }, colors: ['#1976d2'] });
             setIsDisabled(true);
+            // Log summary for AI win
+            fetch('/api/log-summary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    mode: 'human-vs-ai',
+                    winner: 'Blue',
+                    blueAgent: {
+                        depth: aiDepth,
+                        heuristic: aiHeuristic
+                    }
+                })
+            });
             return;
         }
 
@@ -84,7 +116,7 @@ export default function HomePage() {
         await animateFrames(result.aiFrames);
         setIsDisabled(false);
         setHeader(false);
-        setTurn(t => t + 1); // increment turn
+        setTurn(t => t + 1);
     }
 
     return (
@@ -98,7 +130,7 @@ export default function HomePage() {
             justifyContent: 'center',
             alignItems: 'flex-start',
         }}>
-            {/* LEFT SIDEBAR: Info & Tips */}
+            {/* LEFT SIDEBAR: Info & AI Config */}
             <div style={{
                 width: 230,
                 minHeight: 600,
@@ -119,8 +151,7 @@ export default function HomePage() {
                     padding: '18px 10px',
                     color: '#fff',
                     fontSize: '1.1rem',
-                    marginBottom: 24,
-                    marginTop: 0,
+                    marginTop: 50,
                     boxShadow: '0 2px 8px rgba(25, 118, 210, 0.12)',
                     width: '100%',
                 }}>
@@ -128,29 +159,51 @@ export default function HomePage() {
                     <br />
                     <b>Total Orbs:</b> {orbCounts.R + orbCounts.B}
                 </div>
+                {/* AI Depth & Heuristic Controls */}
                 <div style={{
                     background: 'rgba(255,255,255,0.10)',
                     borderRadius: 12,
                     padding: '18px 14px',
                     color: '#fff',
                     fontSize: '1.08rem',
-                    marginTop: 10,
+                    marginTop: 50,
                     boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
                     textAlign: 'left',
                     width: '100%',
                 }}>
-                    <b>Quick Rules:</b>
-                    <ul style={{ margin: '10px 0 0 18px', padding: 0, fontSize: '1rem' }}>
-                        <li>Place orbs in empty or your own cell.</li>
-                        <li>Cells explode at 2 (corner), 3 (edge), 4 (center).</li>
-                        <li>Explosions spread orbs to neighbors.</li>
-                        <li>Capture opponent cells by explosion.</li>
-                        <li>Win by eliminating all opponent orbs!</li>
-                    </ul>
+                    <b>AI Controls (Blue):</b>
+                    <div style={{ marginTop: 10 }}>
+                        Depth:&nbsp;
+                        <input
+                            type="number"
+                            min={1}
+                            max={4}
+                            value={aiDepth}
+                            onChange={e => {
+                                let val = Math.max(1, Math.min(4, Number(e.target.value)));
+                                setAiDepth(val);
+                            }}
+                            style={{ width: 48, borderRadius: 6, padding: 2 }}
+                        />
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                        Heuristic:&nbsp;
+                        <input
+                            type="number"
+                            min={0}
+                            max={4}
+                            value={aiHeuristic}
+                            onChange={e => {
+                                let val = Math.max(0, Math.min(4, Number(e.target.value)));
+                                setAiHeuristic(val);
+                            }}
+                            style={{ width: 48, borderRadius: 6, padding: 2 }}
+                        />
+                    </div>
                 </div>
                 <div style={{
                     background: 'rgba(255,255,255,0.10)',
-                    marginTop: 20,
+                    marginTop: 50,
                     borderRadius: 10,
                     padding: '12px 10px',
                     color: '#ffe082',
@@ -213,7 +266,9 @@ export default function HomePage() {
                     position: 'relative',
                     transition: 'all 0.4s ease-in-out'
                 }}>
-                    <Board boardData={board} onCellClick={handleCellClick} isDisabled={isDisabled} />
+                    {board && (
+                        <Board boardData={board} onCellClick={handleCellClick} isDisabled={isDisabled} />
+                    )}
                 </div>
             </div>
 
@@ -252,6 +307,27 @@ export default function HomePage() {
                     onClick={() => setShowResetConfirm(true)}
                 >
                     🔄 Reset Game
+                </button>
+                <button
+                    style={{
+                        padding: '10px 28px',
+                        fontSize: '1.1rem',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: '#1976d2',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.2)',
+                        transition: 'all 0.3s ease-in-out',
+                        width: '100%',
+                        marginTop: 16,
+                        marginBottom: 16
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                    onClick={() => router.push('/setup')}
+                >
+                    🆕 New Game
                 </button>
                 <Link href="/about"
                     style={{
@@ -334,7 +410,11 @@ export default function HomePage() {
                                 transition: 'background 0.2s',
                             }}
                             onClick={async () => {
-                                await fetch('/api/reset', { method: 'POST' });
+                                await fetch('/api/reset', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ rows, cols })
+                                });
                                 window.location.reload();
                             }}
                         >

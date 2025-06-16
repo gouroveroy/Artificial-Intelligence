@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function Cell({ row, col, cellData, onClick, isDisabled }) {
+export default function Cell({ row, col, cellData, onClick, isDisabled, numRows, numCols }) {
     const { count, color } = cellData;
     const canClick = !isDisabled && (count === 0 || color === 'R');
 
@@ -20,10 +20,16 @@ export default function Cell({ row, col, cellData, onClick, isDisabled }) {
     ];
 
     function criticalMass(r, c) {
-        let cm = 4;
-        if ((r === 0 || r === 8) && (c === 0 || c === 5)) cm = 2;
-        else if (r === 0 || r === 8 || c === 0 || c === 5) cm = 3;
-        return cm;
+        // Use dynamic board size for corners/edges
+        if (
+            (r === 0 || r === numRows - 1) &&
+            (c === 0 || c === numCols - 1)
+        ) return 2; // corner
+        if (
+            r === 0 || r === numRows - 1 ||
+            c === 0 || c === numCols - 1
+        ) return 3; // edge
+        return 4; // center
     }
 
     return (

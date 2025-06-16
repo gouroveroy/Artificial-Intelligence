@@ -7,10 +7,13 @@ export default function Board({ boardData, onCellClick, isDisabled }) {
         return <div style={{ color: "#fff", textAlign: "center" }}>Loading board...</div>;
     }
 
+    const numRows = boardData.length;
+    const numCols = boardData[0]?.length || 0;
+
     const boardStyle = {
         display: 'grid',
-        gridTemplateRows: 'repeat(9, 60px)',
-        gridTemplateColumns: 'repeat(6, 60px)',
+        gridTemplateRows: `repeat(${numRows}, 60px)`,
+        gridTemplateColumns: `repeat(${numCols}, 60px)`,
         gap: '1px',
         margin: '2.5px auto',
         border: '2px rgba(10, 70, 129, 0.3)',
@@ -25,12 +28,13 @@ export default function Board({ boardData, onCellClick, isDisabled }) {
             {boardData.map((rowArr, r) =>
                 rowArr.map((cellData, c) => (
                     <Cell
-                        key={`${r}-${c}`}
                         row={r}
                         col={c}
                         cellData={cellData}
                         onClick={onCellClick}
                         isDisabled={isDisabled}
+                        numRows={numRows}
+                        numCols={numCols}
                     />
                 ))
             )}

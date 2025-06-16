@@ -1,40 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Chain Reaction AI
+
+A web-based implementation of the classic **Chain Reaction** strategy game, featuring a smart AI opponent and an AI-vs-AI mode. Built with [Next.js](https://nextjs.org), React, and a custom minimax engine.
+
+## Features
+
+- **Human vs AI:** Play as Red against a challenging Blue AI.
+- **AI vs AI:** Watch two AI agents battle, with customizable depth and heuristics.
+- **Animated Board:** Explosions and chain reactions are visualized step-by-step.
+- **Persistent State:** Game state is saved between sessions.
+- **Multiple Heuristics:** AI can use different strategies for evaluation.
+- **Reset & Resume:** Start a new game or continue your previous one.
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Open your browser:**
+   Visit [http://localhost:3000](http://localhost:3000) to play.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## How to Play
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- **Goal:** Eliminate all of your opponent's orbs from the board.
+- **Turns:** Players take turns placing an orb in an empty cell or one they already own.
+- **Explosions:**
+  - Corners explode at 2 orbs
+  - Edges at 3 orbs
+  - Center cells at 4 orbs
+  When a cell explodes, it sends orbs to its neighbors, potentially causing chain reactions and capturing opponent cells.
+- **Win:** The last player with orbs remaining wins.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `src/pages/` — Next.js pages (game, AI-vs-AI, about, API routes)
+- `src/components/` — Board and Cell React components
+- `src/lib/` — Game logic, minimax AI, and heuristics
+- `gamestate.txt` — File-based persistent game state
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend & Backend:** Next.js (React)
+- **AI:** Custom minimax with alpha-beta pruning and multiple heuristics ([src/lib/minimax.js](src/lib/minimax.js), [src/lib/heuristics.js](src/lib/heuristics.js))
+- **Animations:** framer-motion
+- **State Management:** File-based with locking for safe concurrent access
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+## Credits
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Developed by **Gourove Roy**
+- Inspired by the classic Chain Reaction game
+
+## License
+
+This project is for educational and personal use.
 
 ## Deploy on Vercel
+You can try the live app here: [https://chain-reaction-game-xi.vercel.app/](https://chain-reaction-game-xi.vercel.app/)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Enjoy the game and try to beat the AI!
+

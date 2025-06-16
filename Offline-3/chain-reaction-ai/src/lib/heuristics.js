@@ -31,8 +31,8 @@ export function heuristicOrbCount(board, myColor) {
 export function heuristicMassProximity(board, myColor) {
     const oppColor = myColor === 'R' ? 'B' : 'R';
     let score = 0;
-    const numRows = 9;
-    const numCols = 6;
+    const numRows = board.length;
+    const numCols = board[0].length;
     const inBounds = (r, c) => r >= 0 && r < numRows && c >= 0 && c < numCols;
     function criticalMass(r, c) {
         let n = 0;
@@ -68,8 +68,8 @@ export function heuristicMassProximity(board, myColor) {
 export function heuristicChainPotential(board, myColor) {
     const oppColor = myColor === 'R' ? 'B' : 'R';
     let score = 0;
-    const numRows = 9;
-    const numCols = 6;
+    const numRows = board.length;
+    const numCols = board[0].length;
     const inBounds = (r, c) => r >= 0 && r < numRows && c >= 0 && c < numCols;
     function criticalMass(r, c) {
         let n = 0;
@@ -122,17 +122,26 @@ export function heuristicChainPotential(board, myColor) {
 export function heuristicControlCornersEdges(board, myColor) {
     const oppColor = myColor === 'R' ? 'B' : 'R';
     let score = 0;
+    const numRows = board.length;
+    const numCols = board[0].length;
 
-    for (let r = 0; r < 9; r++) {
-        for (let c = 0; c < 6; c++) {
+    for (let r = 0; r < numRows; r++) {
+        for (let c = 0; c < numCols; c++) {
             const cell = board[r][c];
             if (cell.count > 0) {
                 // Determine if corner / edge / inner:
                 let weight = 1;
-                if ((r === 0 && c === 0) || (r === 0 && c === 5) || (r === 8 && c === 0) || (r === 8 && c === 5)) {
-                    weight = 3; // corner
-                } else if (r === 0 || r === 8 || c === 0 || c === 5) {
-                    weight = 2; // edge
+                const isCorner =
+                    (r === 0 && c === 0) ||
+                    (r === 0 && c === numCols - 1) ||
+                    (r === numRows - 1 && c === 0) ||
+                    (r === numRows - 1 && c === numCols - 1);
+                const isEdge =
+                    r === 0 || r === numRows - 1 || c === 0 || c === numCols - 1;
+                if (isCorner) {
+                    weight = 3;
+                } else if (isEdge) {
+                    weight = 2;
                 }
                 if (cell.color === myColor) {
                     score += weight * cell.count;
@@ -152,8 +161,10 @@ export function heuristicMobility(board, myColor) {
     const oppColor = myColor === 'R' ? 'B' : 'R';
     let myLegal = 0;
     let oppLegal = 0;
-    for (let r = 0; r < 9; r++) {
-        for (let c = 0; c < 6; c++) {
+    const numRows = board.length;
+    const numCols = board[0].length;
+    for (let r = 0; r < numRows; r++) {
+        for (let c = 0; c < numCols; c++) {
             const cell = board[r][c];
             if (cell.count === 0 || cell.color === myColor) {
                 myLegal++;

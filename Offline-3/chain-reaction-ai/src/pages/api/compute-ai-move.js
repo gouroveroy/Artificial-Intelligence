@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Only POST allowed' });
     }
 
-    const { humanMove } = req.body;
+    const { humanMove, aiDepth, aiHeuristic } = req.body;
     if (!humanMove || typeof humanMove.row !== 'number' || typeof humanMove.col !== 'number') {
         return res.status(400).json({ error: 'Invalid humanMove payload' });
     }
@@ -24,7 +24,9 @@ export default async function handler(req, res) {
     }
 
     const { row: hr, col: hc } = humanMove;
-    if (hr < 0 || hr > 8 || hc < 0 || hc > 5) {
+    const numRows = board.length;
+    const numCols = board[0].length;
+    if (hr < 0 || hr >= numRows || hc < 0 || hc >= numCols) {
         return res.status(400).json({ error: 'Move out of bounds' });
     }
     const targetCell = board[hr][hc];
@@ -37,7 +39,7 @@ export default async function handler(req, res) {
     const humanFinalBoard = humanFrames.at(-1);
 
     await writeGameState('Human Move:', humanFinalBoard);
-    // await new Promise((r) => setTimeout(r, 3500));
+    // await new Promise((r) => setTimeout(r, 100));
 
     const humanWon = checkWinner(humanFinalBoard) === 'R';
     if (humanWon) {
@@ -45,8 +47,9 @@ export default async function handler(req, res) {
         return res.status(200).json({ aiMove: null, humanFrames, aiFrames: [], aiWon: false });
     }
 
-    const depthLimit = 2;
-    const aiResult = findBestMove(humanFinalBoard, 'B', depthLimit);
+    const depthLimit = aiDepth;
+    const heuristic = aiHeuristic;
+    const aiResult = findBestMove(humanFinalBoard, 'B', depthLimit, heuristic);
 
     if (!aiResult || !aiResult.move) {
         await writeGameState('AI Move:', humanFinalBoard);
@@ -79,6 +82,6 @@ export default async function handler(req, res) {
         aiMove: { row: ar, col: ac },
         humanFrames,
         aiFrames,
-        aiWon,
+        aiWon
     });
 }

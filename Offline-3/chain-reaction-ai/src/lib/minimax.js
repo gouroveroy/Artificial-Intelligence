@@ -1,11 +1,21 @@
 import { applyMoveWithFrames, checkWinner } from './gameLogic';
 import { ALL_HEURISTICS } from './heuristics';
 
+/**
+ * getRandomMove(board, color)
+ * - board: NxM array of { count, color }.
+ * - color: 'R' or 'B' (AI’s color).
+ * Returns: { row, col } or null if no valid moves.
+ * This function returns a random valid move for the given color.
+ * If no valid moves are available, it returns null.
+ */
 
 export function getRandomMove(board, color) {
     const moves = [];
-    for (let r = 0; r < 9; r++) {
-        for (let c = 0; c < 6; c++) {
+    const numRows = board.length;
+    const numCols = board[0].length;
+    for (let r = 0; r < numRows; r++) {
+        for (let c = 0; c < numCols; c++) {
             const cell = board[r][c];
             if (cell.count === 0 || cell.color === color) {
                 moves.push({ row: r, col: c });
@@ -19,7 +29,7 @@ export function getRandomMove(board, color) {
 
 /**
  * findBestMove(board, myColor, depthLimit, heuristicIndex = 0)
- *  - board: 9×6 array of { count, color }.
+ *  - board: NxM array of { count, color }.
  *  - myColor: 'R' or 'B' (AI’s color).
  *  - depthLimit: maximum depth for the search.
  *  - heuristicIndex: which heuristic from ALL_HEURISTICS to use.
@@ -27,15 +37,17 @@ export function getRandomMove(board, color) {
  * Returns: { move: { row, col }, value: numeric }
  */
 
-export function findBestMove(board, myColor, depthLimit, heuristicIndex = 0) {
+export function findBestMove(board, myColor, depthLimit, heuristicIndex) {
     const opponent = myColor === 'R' ? 'B' : 'R';
     const heuristic = ALL_HEURISTICS[heuristicIndex];
 
     // Generate legal moves
     function generateMoves(stateBoard, color, maxMoves = Infinity) {
         const moves = [];
-        for (let r = 0; r < 9; r++) {
-            for (let c = 0; c < 6; c++) {
+        const numRows = stateBoard.length;
+        const numCols = stateBoard[0].length;
+        for (let r = 0; r < numRows; r++) {
+            for (let c = 0; c < numCols; c++) {
                 const cell = stateBoard[r][c];
                 if (cell.count === 0 || cell.color === color) {
                     moves.push({ row: r, col: c });
@@ -51,7 +63,7 @@ export function findBestMove(board, myColor, depthLimit, heuristicIndex = 0) {
     }
 
     // Minimax with alpha-beta pruning
-    function alphabeta(stateBoard, currentColor, depth, alpha, beta) {
+    function alphaBeta(stateBoard, currentColor, depth, alpha, beta) {
         const winner = checkWinner(stateBoard);
         if (winner === myColor) return { value: +Infinity };
         if (winner === opponent) return { value: -Infinity };
@@ -72,7 +84,7 @@ export function findBestMove(board, myColor, depthLimit, heuristicIndex = 0) {
             for (const mv of moves) {
                 const frames = applyMoveWithFrames(stateBoard, { row: mv.row, col: mv.col, color: currentColor });
                 const childBoard = frames.at(-1);
-                const { value: v } = alphabeta(childBoard, opponent, depth - 1, alpha, beta);
+                const { value: v } = alphaBeta(childBoard, opponent, depth - 1, alpha, beta);
                 if (v > bestValue) {
                     bestValue = v;
                     bestMove = mv;
@@ -86,7 +98,7 @@ export function findBestMove(board, myColor, depthLimit, heuristicIndex = 0) {
             for (const mv of moves) {
                 const frames = applyMoveWithFrames(stateBoard, { row: mv.row, col: mv.col, color: currentColor });
                 const childBoard = frames.at(-1);
-                const { value: v } = alphabeta(childBoard, myColor, depth - 1, alpha, beta);
+                const { value: v } = alphaBeta(childBoard, myColor, depth - 1, alpha, beta);
                 if (v < bestValue) {
                     bestValue = v;
                     bestMove = mv;
@@ -99,6 +111,11 @@ export function findBestMove(board, myColor, depthLimit, heuristicIndex = 0) {
     }
 
     // Start recursion
-    const rootResult = alphabeta(board, myColor, depthLimit, -Infinity, +Infinity);
+    const rootResult = alphaBeta(board, myColor, depthLimit, -Infinity, +Infinity);
+    if (!rootResult.move) {
+        // If minimax found no move, pick a random legal move
+        const randomMove = getRandomMove(board, myColor);
+        return { move: randomMove, value: 0 };
+    }
     return { move: rootResult.move, value: rootResult.value };
 }

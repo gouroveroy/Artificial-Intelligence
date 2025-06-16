@@ -10,8 +10,8 @@ export default async function handler(req, res) {
     if (
         (header !== 'Human Move:' && header !== 'AI Move:') ||
         !Array.isArray(board) ||
-        board.length !== 9 ||
-        !board.every((row) => Array.isArray(row) && row.length === 6)
+        board.length === 0 ||
+        !board.every((row) => Array.isArray(row) && row.length === board[0].length)
     ) {
         return res.status(400).json({ error: 'Invalid payload' });
     }

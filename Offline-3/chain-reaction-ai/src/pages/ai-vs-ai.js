@@ -1,26 +1,34 @@
 // File: src/pages/ai-vs-ai.js
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Board from '../components/Board';
 import Link from 'next/link';
+import confetti from 'canvas-confetti'; // <-- Add this import
 
 export default function AIVsAILive() {
-    const emptyBoard = Array(9).fill(null).map(() =>
-        Array(6).fill(null).map(() => ({ count: 0, color: null }))
-    );
+    const router = useRouter();
+    const { rows = 9, cols = 6 } = router.query;
 
-    const [board, setBoard] = useState(emptyBoard);
-    const [step, setStep] = useState(1);
+    // Dynamic empty board based on query params
+    const makeEmptyBoard = () =>
+        Array(Number(rows)).fill(null).map(() =>
+            Array(Number(cols)).fill(null).map(() => ({ count: 0, color: null }))
+        );
+
+    const [board, setBoard] = useState(makeEmptyBoard());
+    const [step, setStep] = useState(0);
     const [header, setHeader] = useState(false);
     const [orbCounts, setOrbCounts] = useState({ R: 0, B: 0 });
     const [playing, setPlaying] = useState(false);
     const [winner, setWinner] = useState(null);
     const [agentA, setAgentA] = useState('minimax');
     const [agentB, setAgentB] = useState('random');
-    const [depthA, setDepthA] = useState(2);
-    const [depthB, setDepthB] = useState(2);
+    const [depthA, setDepthA] = useState(3);
+    const [depthB, setDepthB] = useState(3);
     const [heuristicA, setHeuristicA] = useState(0);
     const [heuristicB, setHeuristicB] = useState(0);
     const [stopped, setStopped] = useState(false);
+    const [aiTimeLimit, setAiTimeLimit] = useState(2000);
     const stoppedRef = useRef(false);
 
     // Pause/Resume state and ref
@@ -29,6 +37,24 @@ export default function AIVsAILive() {
 
     // Confirmation for stopping
     const [showStopConfirm, setShowStopConfirm] = useState(false);
+
+    // Timer state
+    const [elapsed, setElapsed] = useState(0);
+    const timerRef = useRef(null);
+
+    // Re-create board if grid size changes
+    useEffect(() => {
+        setBoard(makeEmptyBoard());
+        setStep(0);
+        setHeader(false);
+        setOrbCounts({ R: 0, B: 0 });
+        setWinner(null);
+        setPlaying(false);
+        setStopped(false);
+        stoppedRef.current = false;
+        setPaused(false);
+        pausedRef.current = false;
+    }, [rows, cols]);
 
     function updateOrbCounts(board) {
         let red = 0, blue = 0;
@@ -45,7 +71,7 @@ export default function AIVsAILive() {
         const resp = await fetch('/api/ai-vs-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ board, agent, color, depth, heuristic }),
+            body: JSON.stringify({ board, agent, color, depth, heuristic, aiTimeLimit }),
         });
         return await resp.json();
     }
@@ -61,13 +87,18 @@ export default function AIVsAILive() {
     async function runLiveGame() {
         setPlaying(true);
         setWinner(null);
-        setStep(0);
+        setStep(1);
         setHeader(false);
         setStopped(false);
         stoppedRef.current = false;
         setPaused(false);
         pausedRef.current = false;
-        let currentBoard = JSON.parse(JSON.stringify(emptyBoard));
+        setElapsed(0);
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = setInterval(() => {
+            setElapsed(e => e + 1);
+        }, 1000);
+        let currentBoard = makeEmptyBoard();
         let currentTurn = 'R';
         updateOrbCounts(currentBoard);
 
@@ -98,6 +129,36 @@ export default function AIVsAILive() {
             if (moveWinner) {
                 setWinner(moveWinner);
                 setPlaying(false);
+                // Firework/confetti on win
+                if (moveWinner === 'R') {
+                    confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#e53935', '#ffeb3b'] });
+                } else if (moveWinner === 'B') {
+                    confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#1976d2', '#ffeb3b'] });
+                } else {
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.7 }, colors: ['#ffd600', '#fff'] });
+                }
+                // Log summary to server
+                fetch('/api/log-summary', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mode: 'ai-vs-ai',
+                        winner: moveWinner === 'R' ? 'Red' : 'Blue',
+                        redAgent: {
+                            aiType: agentA,
+                            depth: depthA,
+                            heuristic: heuristicA,
+                            time: (elapsed / (1.5 * step)).toFixed(2)
+                        },
+                        blueAgent: {
+                            aiType: agentB,
+                            depth: depthB,
+                            heuristic: heuristicB,
+                            time: (elapsed / (1.5 * step)).toFixed(2)
+                        },
+                        totalTime: elapsed
+                    })
+                });
                 break;
             }
 
@@ -105,12 +166,31 @@ export default function AIVsAILive() {
             setStep(s => s + 1);
             currentTurn = currentTurn === 'R' ? 'B' : 'R';
         }
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
     }
 
     function handlePauseResume() {
         setPaused(p => {
-            pausedRef.current = !p;
-            return !p;
+            const nextPaused = !p;
+            pausedRef.current = nextPaused;
+            if (nextPaused) {
+                // Pausing: stop timer
+                if (timerRef.current) {
+                    clearInterval(timerRef.current);
+                    timerRef.current = null;
+                }
+            } else {
+                // Resuming: start timer
+                if (!timerRef.current) {
+                    timerRef.current = setInterval(() => {
+                        setElapsed(e => e + 1);
+                    }, 1000);
+                }
+            }
+            return nextPaused;
         });
     }
 
@@ -121,7 +201,7 @@ export default function AIVsAILive() {
     function confirmStop() {
         setStopped(true);
         stoppedRef.current = true;
-        setBoard(emptyBoard);
+        setBoard(makeEmptyBoard());
         setStep(0);
         setHeader(false);
         setOrbCounts({ R: 0, B: 0 });
@@ -130,6 +210,11 @@ export default function AIVsAILive() {
         setPaused(false);
         pausedRef.current = false;
         setShowStopConfirm(false);
+        setElapsed(0);
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
     }
 
     function cancelStop() {
@@ -174,8 +259,28 @@ export default function AIVsAILive() {
                         <option value="random">Random</option>
                         <option value="minimax">Minimax</option>
                     </select>
-                    <br />Depth: <input type="number" value={depthA} onChange={e => setDepthA(Number(e.target.value))} style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }} />
-                    <br />Heuristic: <input type="number" value={heuristicA} onChange={e => setHeuristicA(Number(e.target.value))} style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }} />
+                    <br />Depth: <input
+                        type="number"
+                        min={1}
+                        max={4}
+                        value={depthA}
+                        onChange={e => {
+                            let val = Math.max(1, Math.min(4, Number(e.target.value)));
+                            setDepthA(val);
+                        }}
+                        style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }}
+                    />
+                    <br />Heuristic: <input
+                        type="number"
+                        min={0}
+                        max={4}
+                        value={heuristicA}
+                        onChange={e => {
+                            let val = Math.max(0, Math.min(4, Number(e.target.value)));
+                            setHeuristicA(val);
+                        }}
+                        style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }}
+                    />
                 </div>
                 <div style={{
                     color: '#fff',
@@ -189,8 +294,61 @@ export default function AIVsAILive() {
                         <option value="random">Random</option>
                         <option value="minimax">Minimax</option>
                     </select>
-                    <br />Depth: <input type="number" value={depthB} onChange={e => setDepthB(Number(e.target.value))} style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }} />
-                    <br />Heuristic: <input type="number" value={heuristicB} onChange={e => setHeuristicB(Number(e.target.value))} style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }} />
+                    <br />Depth: <input
+                        type="number"
+                        min={1}
+                        max={4}
+                        value={depthB}
+                        onChange={e => {
+                            let val = Math.max(1, Math.min(4, Number(e.target.value)));
+                            setDepthB(val);
+                        }}
+                        style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }}
+                    />
+                    <br />Heuristic: <input
+                        type="number"
+                        min={0}
+                        max={4}
+                        value={heuristicB}
+                        onChange={e => {
+                            let val = Math.max(0, Math.min(4, Number(e.target.value)));
+                            setHeuristicB(val);
+                        }}
+                        style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }}
+                    />
+                </div>
+                <div style={{
+                    marginTop: 30,
+                    width: '100%',
+                    color: '#fff',
+                    fontSize: '1rem',
+                    background: 'rgba(255,255,255,0.08)',
+                    borderRadius: 8,
+                    padding: '10px 8px',
+                    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)'
+                }}>
+                    <label style={{ fontWeight: 600, marginBottom: 4, display: 'block' }}>
+                        ⏱ Max AI Time (s)
+                    </label>
+                    <input
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={aiTimeLimit / 1000}
+                        onChange={e => {
+                            let val = Math.max(1, Math.min(5, Number(e.target.value)));
+                            setAiTimeLimit(val * 1000);
+                        }}
+                        style={{
+                            width: 80,
+                            fontSize: '1rem',
+                            borderRadius: 6,
+                            padding: '4px 8px',
+                            border: '1px solid #bbb',
+                            marginTop: 4,
+                            textAlign: 'center'
+                        }}
+                    />
                 </div>
             </div>
 
@@ -284,8 +442,9 @@ export default function AIVsAILive() {
                     width: '100%',
                     boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)'
                 }}>
-                    <b>Moves:</b> {step - 1}<br />
-                    <b>Total Orbs:</b> {orbCounts.R + orbCounts.B}
+                    <b>Moves:</b> {step}<br />
+                    <b>Total Orbs:</b> {orbCounts.R + orbCounts.B}<br />
+                    <b>Time:</b> {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, '0')}
                 </div>
                 <button
                     onClick={runLiveGame}
