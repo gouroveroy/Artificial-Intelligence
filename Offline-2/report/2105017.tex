@@ -45,6 +45,8 @@ for each vertex v in V:
 return (A, B)
 \end{verbatim}
 
+\textbf{Time Complexity:} For each iteration, every vertex is assigned randomly, and the cut value is computed by checking all edges. If repeated $n$ times, the total complexity is $O(n(V+E))$. For a single run, it is $O(V+E)$.
+
 \subsection*{2.2 Greedy Algorithm}
 This deterministic approach builds the solution by always making the locally optimal choice at each step. Vertices are assigned to the partition that maximizes their immediate contribution to the cut.
 
@@ -63,7 +65,8 @@ Then we assign $z$ to the partition where it contributes the most to the cut.
 \textbf{Pseudocode:}
 \begin{verbatim}
 Input: Graph G = (V, E)
-Initialize sets A = {}, B = {}
+u, w = endpoints of the heaviest edge in G
+Initialize sets A = {u}, B = {w}
 
 for each vertex v in V:
     Calculate edges from v to A (EA), and to B (EB)
@@ -74,6 +77,8 @@ for each vertex v in V:
 
 return (A, B)
 \end{verbatim}
+
+\textbf{Time Complexity:} Each vertex is considered once, and for each, the sum of edge weights to both sets is computed. Over all vertices, this totals $O(V+E)$.
 
 \subsection*{2.3 Semi-Greedy Algorithm}
 A hybrid approach that combines greedy selection with controlled randomness. It maintains a restricted candidate list (RCL) of good options and randomly selects from them, balancing exploration and exploitation.
@@ -97,7 +102,8 @@ The restricted candidate list (RCL) consists of vertices with $g(v) \ge \mu$. A 
 \textbf{Pseudocode:}
 \begin{verbatim}
 Input: Graph G = (V, E)
-Initialize sets A = {}, B = {}
+u, w = endpoints of the heaviest edge in G
+Initialize sets A = {u}, B = {w}
 Initialize unvisited = V
 
 while unvisited not empty:
@@ -111,6 +117,8 @@ while unvisited not empty:
 
 return (A, B)
 \end{verbatim}
+
+\textbf{Time Complexity:} For each of $V$ assignments, all unassigned vertices are evaluated, and for each, edge sums are computed. This results in $O(V(V+E))$ overall.
 
 \subsection*{2.4 Local Search}
 Starts with an initial solution and iteratively improves it by moving vertices between partitions if doing so increases the cut weight. Continues until no further improvements can be made.
@@ -143,6 +151,8 @@ until improvement == false
 
 return (A, B)
 \end{verbatim}
+
+\textbf{Time Complexity:} Each iteration checks all vertices and their neighbors, which is $O(V+E)$ per iteration. If $k$ is the number of improvement steps, total complexity is $O(k(V+E))$.
 
 \subsection*{2.5 GRASP (Greedy Randomized Adaptive Search Procedure)}
 A metaheuristic that combines semi-greedy construction with local search. Multiple iterations are performed, each generating a new solution which is then locally optimized.
@@ -181,10 +191,11 @@ for i = 1 to MaxIterations:
 return best_cut
 \end{verbatim}
 
+\textbf{Time Complexity:} For $n$ iterations, each performing semi-greedy construction ($O(V(V+E))$) and local search ($O(k(V+E))$), the total is $O(n(V(V+E) + k(V+E)))$. For practical purposes, this is often written as $O(n(V+E + k(V+E)))$.
+
 \textbf{Note on Parameters:}
 \begin{itemize}
 \item \textbf{\(\alpha\)} (\(0 \leq \alpha \leq 1\)): Controls how greedy the semi-greedy construction is. \textit{\(\alpha = 0\)} is fully greedy, \textit{\(\alpha = 1\)} is fully random. In practice, \(\alpha\) is often set to \(0.5\) to balance exploration and exploitation.
-\item \textbf{Local Search Iterations}: Number of iterations for local search. More iterations can lead to better solutions but increase computation time. It is often set based on the size of the graph and available computational resources.
 \item \textbf{MaxIterations}: Number of iterations GRASP will run. Higher values increase quality but require more time. It is often set to a small number (e.g., 50) for practical purposes.
 \end{itemize}
 
@@ -192,10 +203,10 @@ return best_cut
 
 \begin{itemize}
     \item \textbf{GRASP} consistently yields the highest cut weights across all benchmark graphs due to its balanced use of exploration (semi-greedy) and exploitation (local search).
+    \item \textbf{Local Search} is very effective when combined with a good initial solution, significantly improving cut values.
     \item \textbf{Semi-Greedy} generally performs better than Greedy, as it avoids falling into poor local optima by introducing controlled randomness.
     \item \textbf{Greedy} is the fastest method and provides reasonable results, but may miss better solutions due to its deterministic nature.
     \item \textbf{Randomized} gives diverse but typically suboptimal results and is mostly useful as a baseline.
-    \item \textbf{Local Search} is very effective when combined with a good initial solution, significantly improving cut values.
 \end{itemize}
 
 \begin{table}[h]
@@ -205,11 +216,11 @@ return best_cut
         \toprule
         \textbf{Algorithm} & \textbf{Quality} & \textbf{Speed} & \textbf{Deterministic} & \textbf{Complexity} \\
         \midrule
-        Randomized & Low & Very Fast & No & O(E) \\
-        Greedy & Medium & Fast & Yes & O(V+E) \\
-        Semi-Greedy & Medium-High & Medium & No & O(V+E) \\
-        Local Search & High & Slow & Depends on initial & O(kVE) \\
-        GRASP & Very High & Slowest & No & O(n(V+E+kVE)) \\
+        Randomized & Low & Very Fast & No & $O(n(V+E))$ \\
+        Greedy & Medium & Fast & Yes & $O(V+E)$ \\
+        Semi-Greedy & Medium-High & Medium & No & $O(V(V+E))$ \\
+        Local Search & High & Slow & Depends on initial & $O(k(V+E))$ \\
+        GRASP & Very High & Slowest & No & $O(n(V(V+E) + k(V+E)))$ \\
         \bottomrule
     \end{tabular}
 \end{table}
