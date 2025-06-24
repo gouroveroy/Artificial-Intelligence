@@ -1,6 +1,6 @@
 /**
  * We assume:
- *  - board is a 9×6 array like in gameLogic (each cell = { count, color }).
+ *  - board is a r×c array like in gameLogic (each cell = { count, color }).
  *  - myColor is 'R' or 'B' (the player to evaluate for).
  *  - The opponent is the other color.
  *
@@ -33,7 +33,6 @@ export function heuristicMassProximity(board, myColor) {
     let score = 0;
     const numRows = board.length;
     const numCols = board[0].length;
-    const inBounds = (r, c) => r >= 0 && r < numRows && c >= 0 && c < numCols;
     function criticalMass(r, c) {
         let n = 0;
         if (r > 0) n++;
@@ -177,11 +176,52 @@ export function heuristicMobility(board, myColor) {
     return (myLegal - oppLegal) * 10;
 }
 
-// You can bundle them in an array for easy selection:
+// 6. Linear Combination (Mixture) of All Heuristics:
+//    Weighted sum of the previous 5 heuristics.
+export function heuristicMixture(board, myColor) {
+    // Example weights: [1, 0.7, 0.5, 0.5, 0.8]
+    const h0 = heuristicOrbCount(board, myColor);
+    const h1 = heuristicMassProximity(board, myColor);
+    const h2 = heuristicChainPotential(board, myColor);
+    const h3 = heuristicControlCornersEdges(board, myColor);
+    const h4 = heuristicMobility(board, myColor);
+    return (
+        1.0 * h0 +
+        0.7 * h1 +
+        0.5 * h2 +
+        0.5 * h3 +
+        0.8 * h4
+    );
+}
+
+// 7. Adaptive Best Heuristic (Max Ensemble):
+//    Evaluates all 6 heuristics and returns the value from the one with the highest absolute value (most confident).
+export function heuristicAdaptiveBest(board, myColor) {
+    const heuristics = [
+        heuristicOrbCount,
+        heuristicMassProximity,
+        heuristicChainPotential,
+        heuristicControlCornersEdges,
+        heuristicMobility,
+        heuristicMixture,
+    ];
+    let bestScore = heuristics[0](board, myColor);
+    for (let i = 1; i < heuristics.length; i++) {
+        const score = heuristics[i](board, myColor);
+        if (Math.abs(score) > Math.abs(bestScore)) {
+            bestScore = score;
+        }
+    }
+    return bestScore;
+}
+
+// Export all heuristics as an array for easy access
 export const ALL_HEURISTICS = [
     heuristicOrbCount,
     heuristicMassProximity,
     heuristicChainPotential,
     heuristicControlCornersEdges,
     heuristicMobility,
+    heuristicMixture,
+    heuristicAdaptiveBest,
 ];

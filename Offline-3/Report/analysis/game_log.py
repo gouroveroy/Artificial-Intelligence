@@ -67,11 +67,11 @@ df_ai = df[df["mode"] == "ai-vs-ai"]
 df_human = df[df["mode"] == "human-vs-ai"]
 
 
-def save_table_as_image(df, columns, title, filename, win_rate=None):
+def save_table_as_image(df, columns, title, filename, padding, win_rate=None):
     n_rows, n_cols = len(df), len(columns)
-    fig_height = 0.7 + 0.48 * n_rows
-    fig_width = max(10, 1.8 + 1.3 * n_cols)
-    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+    fig_height = 1.0 + 0.2 * n_rows
+    fig_width = max(10, 2.0 + 1.5 * n_cols)
+    _, ax = plt.subplots(figsize=(fig_width, fig_height))
     ax.axis("off")
 
     header_color = "#2a475e"
@@ -104,7 +104,7 @@ def save_table_as_image(df, columns, title, filename, win_rate=None):
             weight="bold", color="white", fontsize=14, family="sans-serif"
         )
         cell.set_edgecolor("#1b2838")
-        cell.set_linewidth(1.5)
+        cell.set_linewidth(1.8)
 
     for i in range(1, n_rows + 1):
         for j in range(n_cols):
@@ -115,27 +115,28 @@ def save_table_as_image(df, columns, title, filename, win_rate=None):
             cell.set_linewidth(0.8)
 
     table.auto_set_column_width(col=list(range(n_cols)))
-    table.scale(1.15, 1.18)
+    table.scale(1.75, 1.75)
 
     plt.title(
         title,
         fontsize=16,
         fontweight="bold",
         color="#2a475e",
-        pad=10,
+        pad=padding,
     )
     if win_rate:
         plt.figtext(
             0.5,
-            0.04,
+            0.01,
             f"Win Rate: {win_rate}",
             ha="center",
             fontsize=12,
             color="#2a475e",
             fontweight="bold",
+            wrap=True
         )
 
-    plt.subplots_adjust(top=0.86, bottom=0.12)
+    plt.subplots_adjust(bottom=.30)
     plt.savefig(filename, bbox_inches="tight", dpi=500)
     plt.close()
 
@@ -171,6 +172,7 @@ if not df_ai.empty:
         ai_columns,
         "AI vs AI Game Comparison",
         "Report/analysis/ai_vs_ai_table.png",
+        175,
         win_rate=win_rate_str,
     )
 
@@ -193,5 +195,6 @@ if not df_human.empty:
         human_columns,
         "Human vs AI Game Comparison",
         "Report/analysis/human_vs_ai_table.png",
+        60,
         win_rate=win_rate_str,
     )

@@ -7,7 +7,7 @@
 \usepackage{float}
 \geometry{margin=1in}
 
-\title{Experimentation and Analysis of Chain Reaction AI Agents}
+\title{Assignment 3 \\ Experimentation and Analysis of Chain Reaction AI Agents}
 \author{Gourove Roy}
 \date{\today}
 
@@ -34,6 +34,8 @@ Chain Reaction is a turn-based strategy game played on a $9\times6$ grid (defaul
       \item \textbf{Heuristic 2:} Chain-Reaction Potential.
       \item \textbf{Heuristic 3:} Board Control (Corners and Edges).
       \item \textbf{Heuristic 4:} Mobility / Legal Move Count.
+      \item \textbf{Heuristic 5:} Linear Combination (Mixture) of All Heuristics.
+      \item \textbf{Heuristic 6:} Adaptive Best Heuristic (Max Ensemble).
     \end{itemize}
   \item \textbf{Time measurement:} Average time per move (from AI logs), total game time.
   \item \textbf{Matches:}
@@ -49,7 +51,7 @@ Chain Reaction is a turn-based strategy game played on a $9\times6$ grid (defaul
 \subsection{Detailed Comparison Tables}
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{analysis/ai_vs_ai_table.png}
+  \includegraphics[width=\textwidth,height=0.55\textheight]{analysis/ai_vs_ai_table.png}
   \caption{AI vs AI Game Comparison Table with Win Rate}
 \end{figure}
 
@@ -61,7 +63,7 @@ Chain Reaction is a turn-based strategy game played on a $9\times6$ grid (defaul
 
 \subsection{Heuristic Performance Statistics}
 
-To evaluate which heuristic performed best, we analyzed all AI vs AI matches (excluding Human vs AI). For each heuristic, we counted the number of games played, number of wins, and calculated the win rate. If any agent was random, we compared heuristics based on average total game time.
+To evaluate which heuristic performed best, we analyzed all AI vs AI matches (excluding Human vs AI). For each heuristic (0--6), we counted the number of games played, number of wins, and calculated the win rate. If any agent was random, we compared heuristics based on average total game time.
 
 \begin{table}[H]
 \centering
@@ -69,11 +71,13 @@ To evaluate which heuristic performed best, we analyzed all AI vs AI matches (ex
 \toprule
 \textbf{Heuristic} & \textbf{Games Played} & \textbf{Wins} & \textbf{Win Rate (\%)} \\
 \midrule
-0 & 22 & 8 & 36.4 \\
-1 & 13 & 4 & 30.8 \\
-2 & 14 & 4 & 28.6 \\
-3 & 13 & 2 & 15.4 \\
-4 & 15 & 6 & 40.0 \\
+0 & 32 & 11 & 34.4 \\
+1 & 17 & 6 & 35.3 \\
+2 & 18 & 5 & 27.8 \\
+3 & 18 & 3 & 16.7 \\
+4 & 18 & 7 & 38.9 \\
+5 & 13 & 6 & 46.2 \\
+6 & 10 & 8 & 80.0 \\
 \bottomrule
 \end{tabular}
 \caption{Heuristic-wise performance in AI vs AI matches (win rate = wins/games played).}
@@ -86,24 +90,28 @@ To evaluate which heuristic performed best, we analyzed all AI vs AI matches (ex
 \textbf{Heuristic} & \textbf{Description} & \textbf{Avg Time vs Random (s)} \\
 \midrule
 0 & Orb-Count Difference & 18.2 \\
-1 & Critical Mass Proximity & -- \\
-2 & Chain-Reaction Potential & -- \\
-3 & Board Control (Corners/Edges) & -- \\
-4 & Mobility / Legal Move Count & -- \\
+1 & Critical Mass Proximity & 68.0 \\
+2 & Chain-Reaction Potential & 100.0 \\
+3 & Board Control (Corners/Edges) & 118.0 \\
+4 & Mobility / Legal Move Count & 58.0 \\
+5 & Mixture of All Heuristics & 62.0 \\
+6 & Adaptive Best (Max Ensemble) & 41.0 \\
 \bottomrule
 \end{tabular}
-\caption{Average total game time for minimax vs random agent by heuristic. Only Heuristic 0 was tested against random.}
+\caption{Average total game time for minimax vs random agent by heuristic.}
 \end{table}
 
 \textbf{Summary:}
 \begin{itemize}
-    \item \textbf{Heuristic 4} (Mobility / Legal Move Count) achieved the highest win rate (40\%) among all AI vs AI matches.
-    \item \textbf{Heuristic 0} (Orb-Count Difference) was the most used, had a solid win rate (36.4\%), and was the only heuristic tested against the random agent, with the fastest average game time (18.2s).
-    \item Heuristics 1, 2, and 3 had lower win rates in these experiments.
+    \item \textbf{Heuristic 6} (Adaptive Best/Max Ensemble) achieved the highest win rate (80\%) among all AI vs AI matches.
+    \item \textbf{Heuristic 5} (Mixture) also performed strongly (46.2\% win rate).
+    \item \textbf{Heuristic 4} (Mobility) and \textbf{Heuristic 1} (Critical Mass Proximity) had solid win rates (38.9\% and 35.3\%).
+    \item \textbf{Heuristic 0} (Orb-Count Difference) was the most used, with a win rate of 34.4\%, and was the fastest against random (18.2s).
+    \item Heuristics 2 and 3 had lower win rates in these experiments.
 \end{itemize}
 
-\textbf{Conclusion:} Heuristic 4 performed best by win rate in AI vs AI matches. Heuristic 0 is fastest and most effective against random.
-
+\textbf{Conclusion:} Heuristic 6 (Adaptive Best) performed best by win rate in AI vs AI matches. Heuristic 0 is fastest and most effective against random. Mixture (Heuristic 5) is also a strong choice.
+\pagebreak
 \section{Discussion}
 The experiments show that:
 \begin{itemize}

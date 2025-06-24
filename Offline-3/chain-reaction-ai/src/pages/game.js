@@ -191,7 +191,7 @@ export default function HomePage() {
                         <input
                             type="number"
                             min={0}
-                            max={4}
+                            max={6}
                             value={aiHeuristic}
                             onChange={e => {
                                 let val = Math.max(0, Math.min(4, Number(e.target.value)));

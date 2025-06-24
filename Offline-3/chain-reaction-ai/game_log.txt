@@ -203,3 +203,123 @@ Red agent: minimax, depth=4, heuristic=3, avg_time=1.11s
 Blue agent: minimax, depth=4, heuristic=4, avg_time=1.11s
 Total game time: 75s
 ---
+Game #37
+Winner: Red
+Red agent: minimax, depth=3, heuristic=1, avg_time=NaNs
+Blue agent: random
+Total game time: 68s
+---
+Game #38
+Winner: Red
+Red agent: minimax, depth=3, heuristic=2, avg_time=1.11s
+Blue agent: random
+Total game time: 100s
+---
+Game #39
+Winner: Red
+Red agent: minimax, depth=3, heuristic=3, avg_time=1.55s
+Blue agent: random
+Total game time: 118s
+---
+Game #40
+Winner: Red
+Red agent: minimax, depth=3, heuristic=4, avg_time=1.26s
+Blue agent: random
+Total game time: 58s
+---
+Game #41
+Winner: Red
+Red agent: minimax, depth=3, heuristic=5, avg_time=NaNs
+Blue agent: random
+Total game time: 62s
+---
+Game #42
+Winner: Red
+Red agent: minimax, depth=3, heuristic=6, avg_time=1.01s
+Blue agent: random
+Total game time: 20s
+---
+Game #43
+Winner: Red
+Red agent: minimax, depth=3, heuristic=6, avg_time=0.34s
+Blue agent: minimax, depth=3, heuristic=6, avg_time=0.34s
+Total game time: 54s
+---
+Game #44
+Winner: Red
+Red agent: minimax, depth=3, heuristic=6, avg_time=0.97s
+Blue agent: minimax, depth=3, heuristic=5, avg_time=0.81s
+Total game time: 74s
+---
+Game #45
+Winner: Red
+Red agent: minimax, depth=3, heuristic=6, avg_time=1.15s
+Blue agent: minimax, depth=3, heuristic=4, avg_time=.95s
+Total game time: 99s
+---
+Game #46
+Winner: Red
+Red agent: minimax, depth=3, heuristic=6, avg_time=1.61s
+Blue agent: minimax, depth=3, heuristic=3, avg_time=1.25s
+Total game time: 14s
+---
+Game #47
+Winner: Red
+Red agent: minimax, depth=3, heuristic=6, avg_time=0.27s
+Blue agent: minimax, depth=3, heuristic=2, avg_time=0.20s
+Total game time: 112s
+---
+Game #48
+Winner: Red
+Red agent: minimax, depth=3, heuristic=6, avg_time=1.82s
+Blue agent: minimax, depth=3, heuristic=1, avg_time=1.50s
+Total game time: 84s
+---
+Game #49
+Winner: Red
+Red agent: minimax, depth=3, heuristic=6, avg_time=1.37s
+Blue agent: minimax, depth=3, heuristic=0, avg_time=1.12s
+Total game time: 49s
+---
+Game #50
+Winner: Red
+Red agent: minimax, depth=3, heuristic=5, avg_time=0.93s
+Blue agent: minimax, depth=3, heuristic=0, avg_time=0.67s
+Total game time: 18s
+---
+Game #51
+Winner: Red
+Red agent: minimax, depth=3, heuristic=5, avg_time=0.29s
+Blue agent: minimax, depth=3, heuristic=1, avg_time=0.21s
+Total game time: 46s
+---
+Game #52
+Winner: Red
+Red agent: minimax, depth=3, heuristic=5, avg_time=1.35s
+Blue agent: minimax, depth=3, heuristic=2, avg_time=1.22s
+Total game time: 67s
+---
+Game #53
+Winner: Red
+Red agent: minimax, depth=3, heuristic=5, avg_time=0.99s
+Blue agent: minimax, depth=3, heuristic=3, avg_time=0.77s
+Total game time: 101s
+---
+Game #54
+Winner: Red
+Red agent: minimax, depth=3, heuristic=5, avg_time=1.50s
+Blue agent: minimax, depth=3, heuristic=4, avg_time=1.17s
+Total game time: 56s
+---
+Game #55
+Winner: Red
+Red agent: minimax, depth=3, heuristic=5, avg_time=0.83s
+Blue agent: minimax, depth=3, heuristic=5, avg_time=0.51s
+Total game time: 47s
+---
+Game #56
+Winner: Blue
+Red agent: minimax, depth=3, heuristic=5, avg_time=0.70s
+Blue agent: minimax, depth=3, heuristic=5, avg_time=0.70s
+Total game time: 46s
+---
