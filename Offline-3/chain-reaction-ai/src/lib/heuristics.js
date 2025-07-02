@@ -215,6 +215,37 @@ export function heuristicAdaptiveBest(board, myColor) {
     return bestScore;
 }
 
+export function heuristicOnline(board, myColor) {
+    const oppColor = myColor === 'R' ? 'B' : 'R';
+    let numRows = board.length;
+    let numCols = board[0].length;
+    let score = 0;
+    let weights = [];
+    for (let r = 0; r < numRows; r++) {
+        for (let c = 0; c < numCols; c++) {
+            let cell = board[r][c];
+            if ((r + c) % 2 == 0 && cell.count > 0) {
+                let weight = r + c;
+                if (weights.indexOf(weight) == -1) {
+                    if (cell.color === myColor) {
+                        score += weight * cell.count;
+                    } else {
+                        score -= weight * cell.count;
+                    }
+                } else {
+                    if (cell.color === myColor) {
+                        score += weight * r * cell.count;
+                    } else {
+                        score -= weight * r * cell.count;
+                    }
+                }
+                weights.push(weight);
+            }
+        }
+    }
+    return score;
+}
+
 // Export all heuristics as an array for easy access
 export const ALL_HEURISTICS = [
     heuristicOrbCount,
@@ -224,4 +255,5 @@ export const ALL_HEURISTICS = [
     heuristicMobility,
     heuristicMixture,
     heuristicAdaptiveBest,
+    heuristicOnline,
 ];

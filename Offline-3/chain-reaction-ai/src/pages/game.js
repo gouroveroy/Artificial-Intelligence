@@ -191,10 +191,10 @@ export default function HomePage() {
                         <input
                             type="number"
                             min={0}
-                            max={6}
+                            max={7}
                             value={aiHeuristic}
                             onChange={e => {
-                                let val = Math.max(0, Math.min(4, Number(e.target.value)));
+                                let val = Math.max(0, Math.min(7, Number(e.target.value)));
                                 setAiHeuristic(val);
                             }}
                             style={{ width: 48, borderRadius: 6, padding: 2 }}

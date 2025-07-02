@@ -273,10 +273,10 @@ export default function AIVsAILive() {
                     <br />Heuristic: <input
                         type="number"
                         min={0}
-                        max={6}
+                        max={7}
                         value={heuristicA}
                         onChange={e => {
-                            let val = Math.max(0, Math.min(6, Number(e.target.value)));
+                            let val = Math.max(0, Math.min(7, Number(e.target.value)));
                             setHeuristicA(val);
                         }}
                         style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }}
@@ -308,10 +308,10 @@ export default function AIVsAILive() {
                     <br />Heuristic: <input
                         type="number"
                         min={0}
-                        max={6}
+                        max={7}
                         value={heuristicB}
                         onChange={e => {
-                            let val = Math.max(0, Math.min(6, Number(e.target.value)));
+                            let val = Math.max(0, Math.min(7, Number(e.target.value)));
                             setHeuristicB(val);
                         }}
                         style={{ width: 48, borderRadius: 6, padding: 2, marginTop: 4 }}
