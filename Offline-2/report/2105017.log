@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.9.18)  11 MAY 2025 00:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.9.18)  25 JUN 2025 03:31
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -240,23 +240,23 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 <../comparison_plot.png, id=28, 1011.78pt x 433.62pt>
 File: ../comparison_plot.png Graphic file (type png)
 <use ../comparison_plot.png>
-Package pdftex.def Info: ../comparison_plot.png  used on input line 220.
+Package pdftex.def Info: ../comparison_plot.png  used on input line 231.
 (pdftex.def)             Requested size: 446.26582pt x 191.25655pt.
 
 
-[5 <../comparison_plot.png>]
-Overfull \hbox (2.59106pt too wide) in paragraph at lines 229--230
+[5]
+Overfull \hbox (2.59106pt too wide) in paragraph at lines 240--241
 []\OT1/cmr/m/n/10.95 Execution time scales with graph size and num-ber of it-er-a-tions. GRASP's per-for-mance/quality
  []
 
 
-Overfull \hbox (7.6504pt too wide) in paragraph at lines 233--234
+Overfull \hbox (7.6504pt too wide) in paragraph at lines 244--245
 \OT1/cmr/m/n/10.95 GRASP, by com-bin-ing di-ver-si-fi-ca-tion (through semi-greedy con-struc-tion) and in-ten-si-fi-ca-tion (through
  []
 
 
 
-[6] (2105017.aux)
+[6 <../comparison_plot.png>] (2105017.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-08-30>
@@ -265,13 +265,13 @@ L3 programming layer <2024-08-30>
 Here is how much of TeX's memory you used:
  2732 strings out of 473899
  43215 string characters out of 5726972
- 443277 words of memory out of 5000000
+ 445277 words of memory out of 5000000
  25596 multiletter control sequences out of 15000+600000
  564993 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  57i,9n,65p,596b,280s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\User\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1095.pk><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on 2105017.pdf (6 pages, 500251 bytes).
+Output written on 2105017.pdf (6 pages, 502589 bytes).
 PDF statistics:
  94 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

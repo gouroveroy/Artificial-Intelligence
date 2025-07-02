@@ -9,13 +9,6 @@ class MaximumCut
     unordered_set<int> vertexSet1;
     unordered_set<int> vertexSet2;
 
-    /**
-     * The function `findMaximumWeightedEdge` finds the edge with the maximum weight in a graph
-     * represented as an adjacency list.
-     *
-     * @return A pair of integers representing the vertices of the edge with the maximum weight in the
-     * graph.
-     */
     pair<int, int> findMaximumWeightedEdge()
     {
         int u_max = -1, v_max = -1, maxWeight = INT_MIN;
@@ -37,12 +30,6 @@ class MaximumCut
         return {u_max, v_max};
     }
 
-    /**
-     * The function calculates the maximum weight of edges connecting vertices in two different sets.
-     *
-     * @return The function `getMaximumCutWeight` returns the total weight of the maximum cut in the
-     * graph based on the vertices in `vertexSet1` and `vertexSet2`.
-     */
     int getMaximumCutWeight()
     {
         int maximumCutWeight = 0;
@@ -66,9 +53,6 @@ class MaximumCut
         return maximumCutWeight;
     }
 
-    /**
-     * The function `clearSets` clears two sets named `vertexSet1` and `vertexSet2`.
-     */
     void clearSets()
     {
         vertexSet1.clear();
@@ -76,14 +60,6 @@ class MaximumCut
     }
 
 public:
-    /**
-     * The function `MaximumCut` initializes the graph, number of vertices, and number of edges based
-     * on the input graph data structure.
-     *
-     * @param vector The `MaximumCut` function you provided seems to be initializing some member
-     * variables based on the input graph. The input parameter `graph` is a 3D vector, where each
-     * element represents a vertex and its adjacent vertices.
-     */
     MaximumCut(vector<vector<vector<int>>> &graph)
     {
         srand(time(0));
@@ -99,22 +75,9 @@ public:
         numberOfEdges /= 2;
     }
 
-    /**
-     * The `greedyAlgorithm` function implements a greedy algorithm to partition vertices into two sets
-     * to maximize the total weight of edges between the two sets.
-     *
-     * @return The `greedyAlgorithm` function returns the weight of the maximum cut found by the
-     * algorithm after processing the graph and assigning vertices to two sets based on edge weights.
-     */
     int greedyAlgorithm()
     {
         clearSets();
-
-        auto edge = findMaximumWeightedEdge();
-        int u_max = edge.first;
-        int v_max = edge.second;
-        vertexSet1.insert(u_max);
-        vertexSet2.insert(v_max);
 
         for (int i = 1; i <= numberOfVertices; i++)
         {
@@ -147,17 +110,6 @@ public:
         return getMaximumCutWeight();
     }
 
-    /**
-     * The function `randomizedAlgorithm` generates random cuts on a graph and calculates the average
-     * maximum cut weight over a specified number of iterations.
-     *
-     * @param n The `n` parameter in the `randomizedAlgorithm` function represents the number of
-     * iterations the algorithm will run. If `n` is not provided when calling the function, it defaults
-     * to `-1`, in which case it will use the value of `numberOfVertices` as the number of iterations.
-     *
-     * @return The function `randomizedAlgorithm` returns the average maximum cut weight calculated
-     * over `n` iterations.
-     */
     int randomizedAlgorithm(int n = -1)
     {
         if (n == -1)
@@ -189,18 +141,6 @@ public:
         return maximumCutWeight;
     }
 
-    /**
-     * The function implements a semi-greedy algorithm to find a maximum cut in a graph with specified
-     * alpha value.
-     *
-     * @param alpha The `alpha` parameter in the `semiGreedyAlgorithm` function represents a value
-     * between 0 and 1 that determines the balance between the minimum and maximum weights when
-     * calculating the threshold `mu`. It is used in the formula `mu = wMin + alpha * (wMax - wMin)
-     *
-     * @return The `semiGreedyAlgorithm` function returns the weight of the maximum cut found by the
-     * algorithm after assigning vertices to two sets based on a semi-greedy approach with a specified
-     * alpha value.
-     */
     int semiGreedyAlgorithm(double alpha = 0.5)
     {
         clearSets();
@@ -275,14 +215,6 @@ public:
                 }
             }
 
-            // The following check for an empty restrictedCandidateElements (RCL) is not needed.
-            // Explanation:
-            // - The RCL is constructed by including all candidates whose greedyVal >= mu.
-            // - mu is calculated as wMin + alpha * (wMax - wMin), where wMin and wMax are the
-            //   minimum and maximum greedy values among all candidates.
-            // - By definition, at least one candidate will have greedyVal == wMax, and since
-            //   mu <= wMax, there will always be at least one candidate with greedyVal >= mu.
-            // - Therefore, the RCL will never be empty, and this fallback assignment is redundant.
             if (restrictedCandidateElements.empty())
             {
                 restrictedCandidateElements = candidateElements;
@@ -307,17 +239,6 @@ public:
         return getMaximumCutWeight();
     }
 
-    /**
-     * The function implements a local search algorithm for finding the maximum cut weight in a graph
-     * using different algorithms like greedy, randomized, and semi-greedy.
-     *
-     * @param algorithm The `algorithm` parameter in the `localSearchAlgorithm` function determines
-     * which algorithm to use for the local search. The function checks the value of the `algorithm`
-     * parameter and then calls the corresponding algorithm function based on the value provided.
-     *
-     * @return The function `localSearchAlgorithm` returns the weight of the maximum cut found by the
-     * algorithm.
-     */
     int localSearchAlgorithm(string algorithm = "randomized")
     {
         if (algorithm == "greedy")
@@ -391,18 +312,6 @@ public:
         return getMaximumCutWeight();
     }
 
-    /**
-     * The GRASPAlgorithm function iterates a specified number of times, performing a local search
-     * algorithm and returning the best cut weight found.
-     *
-     * @param maxIterations The `maxIterations` parameter in the `GRASPAlgorithm` function specifies
-     * the maximum number of iterations the algorithm will run for. This parameter controls how many
-     * times the algorithm will attempt to find an improved solution using the local search algorithm
-     * within the GRASP framework. By default, the value is set to 10.
-     *
-     * @return The `GRASPAlgorithm` function returns the best cut weight found after running the GRASP
-     * algorithm for a specified number of iterations (default is 10).
-     */
     int GRASPAlgorithm(int maxIterations = 10)
     {
         int bestCutWeight = INT_MIN;
