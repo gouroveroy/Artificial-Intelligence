@@ -1,0 +1,252 @@
+Results for dataset: Datasets/Iris.csv
+Criterion: IG
+Max Tree Depth: 0
+Average Accuracy: 99%
+Average Node Count: 12
+Average Tree Depth: 4
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IG
+Max Tree Depth: 1
+Average Accuracy: 96.3333%
+Average Node Count: 4
+Average Tree Depth: 1
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IG
+Max Tree Depth: 2
+Average Accuracy: 97%
+Average Node Count: 9
+Average Tree Depth: 2
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IG
+Max Tree Depth: 3
+Average Accuracy: 97.6667%
+Average Node Count: 10
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IG
+Max Tree Depth: 4
+Average Accuracy: 98.3333%
+Average Node Count: 11
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IG
+Max Tree Depth: 5
+Average Accuracy: 99%
+Average Node Count: 11
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IGR
+Max Tree Depth: 0
+Average Accuracy: 98.5%
+Average Node Count: 10
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IGR
+Max Tree Depth: 1
+Average Accuracy: 99%
+Average Node Count: 4
+Average Tree Depth: 1
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IGR
+Max Tree Depth: 2
+Average Accuracy: 98.3333%
+Average Node Count: 8
+Average Tree Depth: 2
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IGR
+Max Tree Depth: 3
+Average Accuracy: 99%
+Average Node Count: 10
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IGR
+Max Tree Depth: 4
+Average Accuracy: 98.6667%
+Average Node Count: 9
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: IGR
+Max Tree Depth: 5
+Average Accuracy: 98.8333%
+Average Node Count: 12
+Average Tree Depth: 4
+
+Results for dataset: Datasets/Iris.csv
+Criterion: NWIG
+Max Tree Depth: 0
+Average Accuracy: 98.8333%
+Average Node Count: 10
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: NWIG
+Max Tree Depth: 1
+Average Accuracy: 97.3333%
+Average Node Count: 4
+Average Tree Depth: 1
+
+Results for dataset: Datasets/Iris.csv
+Criterion: NWIG
+Max Tree Depth: 2
+Average Accuracy: 98.3333%
+Average Node Count: 8
+Average Tree Depth: 2
+
+Results for dataset: Datasets/Iris.csv
+Criterion: NWIG
+Max Tree Depth: 3
+Average Accuracy: 97.6667%
+Average Node Count: 10
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: NWIG
+Max Tree Depth: 4
+Average Accuracy: 98.1667%
+Average Node Count: 11
+Average Tree Depth: 3
+
+Results for dataset: Datasets/Iris.csv
+Criterion: NWIG
+Max Tree Depth: 5
+Average Accuracy: 98.8333%
+Average Node Count: 10
+Average Tree Depth: 3
+
+Results for dataset: Datasets/adult.data
+Criterion: IG
+Max Tree Depth: 0
+Average Accuracy: 80.4591%
+Average Node Count: 14904
+Average Tree Depth: 14
+
+Results for dataset: Datasets/adult.data
+Criterion: IG
+Max Tree Depth: 1
+Average Accuracy: 75.8591%
+Average Node Count: 7
+Average Tree Depth: 1
+
+Results for dataset: Datasets/adult.data
+Criterion: IG
+Max Tree Depth: 2
+Average Accuracy: 81.9208%
+Average Node Count: 90
+Average Tree Depth: 2
+
+Results for dataset: Datasets/adult.data
+Criterion: IG
+Max Tree Depth: 3
+Average Accuracy: 82.3883%
+Average Node Count: 693
+Average Tree Depth: 3
+
+Results for dataset: Datasets/adult.data
+Criterion: IG
+Max Tree Depth: 4
+Average Accuracy: 82.4681%
+Average Node Count: 1927
+Average Tree Depth: 4
+
+Results for dataset: Datasets/adult.data
+Criterion: IG
+Max Tree Depth: 5
+Average Accuracy: 82.1419%
+Average Node Count: 3402
+Average Tree Depth: 5
+
+Results for dataset: Datasets/adult.data
+Criterion: IGR
+Max Tree Depth: 0
+Average Accuracy: 80.6963%
+Average Node Count: 11569
+Average Tree Depth: 14
+
+Results for dataset: Datasets/adult.data
+Criterion: IGR
+Max Tree Depth: 1
+Average Accuracy: 77.5795%
+Average Node Count: 3
+Average Tree Depth: 1
+
+Results for dataset: Datasets/adult.data
+Criterion: IGR
+Max Tree Depth: 2
+Average Accuracy: 78.493%
+Average Node Count: 14
+Average Tree Depth: 2
+
+Results for dataset: Datasets/adult.data
+Criterion: IGR
+Max Tree Depth: 3
+Average Accuracy: 81.2905%
+Average Node Count: 60
+Average Tree Depth: 3
+
+Results for dataset: Datasets/adult.data
+Criterion: IGR
+Max Tree Depth: 4
+Average Accuracy: 82.3553%
+Average Node Count: 264
+Average Tree Depth: 4
+
+Results for dataset: Datasets/adult.data
+Criterion: IGR
+Max Tree Depth: 5
+Average Accuracy: 83.1092%
+Average Node Count: 625
+Average Tree Depth: 5
+
+Results for dataset: Datasets/adult.data
+Criterion: NWIG
+Max Tree Depth: 0
+Average Accuracy: 81.0057%
+Average Node Count: 13463
+Average Tree Depth: 14
+
+Results for dataset: Datasets/adult.data
+Criterion: NWIG
+Max Tree Depth: 1
+Average Accuracy: 75.8951%
+Average Node Count: 7
+Average Tree Depth: 1
+
+Results for dataset: Datasets/adult.data
+Criterion: NWIG
+Max Tree Depth: 2
+Average Accuracy: 81.8878%
+Average Node Count: 24
+Average Tree Depth: 2
+
+Results for dataset: Datasets/adult.data
+Criterion: NWIG
+Max Tree Depth: 3
+Average Accuracy: 82.5119%
+Average Node Count: 92
+Average Tree Depth: 3
+
+Results for dataset: Datasets/adult.data
+Criterion: NWIG
+Max Tree Depth: 4
+Average Accuracy: 82.9702%
+Average Node Count: 377
+Average Tree Depth: 4
+
+Results for dataset: Datasets/adult.data
+Criterion: NWIG
+Max Tree Depth: 5
+Average Accuracy: 83.1959%
+Average Node Count: 1060
+Average Tree Depth: 5
+

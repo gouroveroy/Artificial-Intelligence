@@ -1,0 +1,126 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[margin=1in]{geometry}
+
+\title{Assignment 4 - Decision Tree\\
+       Analysis Report}
+\author{Gourove Roy\\
+        2105017\\
+        Bangladesh University of Engineering and Technology (BUET)}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+This report presents the results of decision tree experiments on the Iris and Adult datasets using three attribute selection criteria: Information Gain (IG), Information Gain Ratio (IGR), and Normalized Weighted Information Gain (NWIG). The experiments evaluated how different criteria and pruning depths affect accuracy, tree complexity, and overfitting behavior. The implementation followed the specifications in the assignment document, including handling of missing values and 20 repeated trials with random 80/20 splits.
+
+\section*{Experimental Setup}
+The decision tree was implemented in C++ with the following specifications:
+\begin{itemize}
+    \item \textbf{Datasets:} Iris (150 samples, 4 features) and Adult (48,842 samples, 14 features)
+    \item \textbf{Attribute Selection:} IG, IGR, and NWIG criteria as defined in the assignment
+    \item \textbf{Pruning:} Maximum depth parameter (0 = no pruning)
+    \item \textbf{Missing Values:} Replaced with most common attribute value
+    \item \textbf{Continuous Attributes:} Discretized into low/medium/high using 33rd/66th percentiles
+    \item \textbf{Evaluation:} 20 trials with random 80\%/20\% splits, average accuracy reported
+\end{itemize}
+
+\section*{Results and Graphs}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{analysis/images/Datasets_Iris.csv_accuracy.png}
+    \caption{Average Accuracy vs Max Depth for Iris Dataset}
+    \label{fig:iris_acc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{analysis/images/Datasets_Iris.csv_nodes.png}
+    \caption{Average Node Count vs Max Depth for Iris Dataset}
+    \label{fig:iris_nodes}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{analysis/images/Datasets_adult.data_accuracy.png}
+    \caption{Average Accuracy vs Max Depth for Adult Dataset}
+    \label{fig:adult_acc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{analysis/images/Datasets_adult.data_nodes.png}
+    \caption{Average Node Count vs Max Depth for Adult Dataset}
+    \label{fig:adult_nodes}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Unpruned Tree Statistics (Max Depth = 0)}
+\begin{tabular}{lccc}
+\toprule
+\multicolumn{1}{l}{\textbf{Dataset \newline Criterion}} & \textbf{Avg. Depth} & \textbf{Avg. Nodes} & \textbf{Avg. Accuracy} \\
+\midrule
+Iris (IG) & 4 & 12 & 0.99 \\
+Iris (IGR) & 3 & 10 & 0.985 \\
+Iris (NWIG) & 3 & 10 & 0.988 \\
+\midrule
+Adult (IG) & 14 & 14904 & 0.8046 \\
+Adult (IGR) & 14 & 11569 & 0.8069 \\
+Adult (NWIG) & 14 & 13463 & 0.8101 \\
+\bottomrule
+\end{tabular}
+\label{tab:unpruned}
+\end{table}
+
+\section*{Observations and Analysis}
+
+\subsection*{Accuracy vs. Depth Trade-offs}
+\begin{itemize}
+    \item \textbf{Iris Dataset:} All criteria achieve high accuracy (96-99\%) by depth 3. IG and IGR reach 99\% at max depth, NWIG is slightly lower but still above 98\%. Shallow trees (depth 1-2) have lower accuracy (96-98\%).
+    \item \textbf{Adult Dataset:} Accuracy increases with depth for all criteria, plateauing around 82-83\% at depth 4-5. IGR and NWIG slightly outperform IG at higher depths. Shallow trees (depth 1) have much lower accuracy (75-77\%).
+\end{itemize}
+
+\subsection*{Tree Complexity}
+\begin{itemize}
+    \item \textbf{Node Count:} For both datasets, node count increases rapidly with depth. On Adult, IG produces the largest trees (up to 15,000 nodes unpruned), while NWIG and IGR are more compact.
+    \item \textbf{Depth:} All criteria reach the maximum allowed depth in unpruned trees (depth 14 for Adult, 4 for Iris).
+\end{itemize}
+
+\subsection*{Criteria Comparison}
+\begin{itemize}
+    \item \textbf{IG:} Highest accuracy on Iris, but produces the largest trees, especially on Adult.
+    \item \textbf{IGR:} Consistently strong performance, especially on Adult, with smaller trees than IG.
+    \item \textbf{NWIG:} Most compact trees, with accuracy close to IGR and IG, especially at higher depths.
+\end{itemize}
+
+\subsection*{Pruning Effects}
+\begin{itemize}
+    \item \textbf{Overfitting Reduction:} Pruning (lower max depth) reduces node count and helps prevent overfitting, especially on Adult.
+    \item \textbf{Efficiency Gains:} Node count drops dramatically with pruning, with only a small loss in accuracy for moderate depths.
+    \item \textbf{Optimal Depths:} For Iris, depth 3-4 is optimal; for Adult, depth 4-5 is optimal.
+\end{itemize}
+
+\subsection*{Unexpected Findings}
+\begin{itemize}
+    \item NWIG sometimes outperforms IG at moderate depths on Adult, despite being more compact.
+    \item IGR is the most robust across both datasets and depths.
+    \item Node count can be extremely high for unpruned trees on Adult, with little accuracy gain beyond depth 5.
+\end{itemize}
+
+\section*{Conclusion}
+The experiments show that:
+\begin{itemize}
+    \item \textbf{IGR} is a strong default, balancing accuracy and tree size.
+    \item \textbf{NWIG} is best for compact models with only a small accuracy trade-off.
+    \item \textbf{Pruning} is essential for large datasets to avoid overfitting and excessive complexity.
+    \item The best criterion and depth depend on the dataset; tuning is important for optimal results.
+\end{itemize}
+
+\end{document}
