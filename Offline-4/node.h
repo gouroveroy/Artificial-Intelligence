@@ -88,6 +88,13 @@ public:
         return fallbackClass;
     }
 
+    /**
+     * The function `getSplitAttribute` returns the index of the attribute used for splitting in a decision
+     * tree node.
+     *
+     * @return The function `getSplitAttribute` is returning an integer value, which represents the index
+     * of the attribute used for splitting in a decision tree node.
+     */
     const map<string, unique_ptr<Node>>& getChildren() const
     {
         return children;

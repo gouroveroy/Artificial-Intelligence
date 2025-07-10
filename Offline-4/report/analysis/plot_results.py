@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import re
 import os
 
 
@@ -15,7 +14,7 @@ def parse_report(filename):
             depth = int(lines[i + 2].split(":")[1].strip())
             acc = float(lines[i + 3].split(":")[1].strip().replace("%", ""))
             nodes = float(lines[i + 4].split(":")[1].strip())
-            tree_depth = int(lines[i + 5].split(":")[1].strip())
+            _ = int(lines[i + 5].split(":")[1].strip())
             key = (dataset, criterion)
             if key not in results:
                 results[key] = {"depths": [], "acc": [], "nodes": []}
