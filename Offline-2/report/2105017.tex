@@ -192,9 +192,33 @@ return best_cut
 \end{verbatim}
 
 \textbf{Time Complexity:} For $n$ iterations, each performing semi-greedy construction ($O(V(V+E))$) and local search ($O(k(V+E))$), the total is $O(n(V(V+E) + k(V+E)))$. For practical purposes, this is often written as $O(n(V+E + k(V+E)))$.
-
+\\
+\\
 \textbf{Note on Parameters:}
+\\
+\textbf{Alpha Parameter Tuning:}
+The semi-greedy algorithm is tunable via the $\alpha$ (alpha) parameter, which controls the balance between greediness and randomness when selecting the next vertex to assign:
+
 \begin{itemize}
+\item \textbf{When $\alpha = 0$:} The threshold $\mu$ becomes the minimum possible value ($w_{\min}$). Only the most "greedy" candidates (those with the highest gain) are chosen, making the algorithm behave like a pure greedy algorithm.
+
+\item \textbf{When $\alpha = 1$:} The threshold $\mu$ becomes the maximum possible value ($w_{\max}$). All candidates with the highest possible gain are included, but since the restricted candidate list can be large, the selection among them is random, making the algorithm behave more randomly.
+
+\item \textbf{For $0 < \alpha < 1$:} The threshold $\mu$ is between $w_{\min}$ and $w_{\max}$. The restricted candidate list includes all candidates whose greedy value is at least $\mu$, so the algorithm mixes greedy selection with random choice among good candidates.
+\end{itemize}
+
+\textbf{Detailed Example:}
+In the semi-greedy algorithm, for each unassigned vertex, you calculate a "greedy value" (how good it would be to assign it to a set). You find the minimum ($w_{\min}$) and maximum ($w_{\max}$) of these values, then set a threshold: $\mu = w_{\min} + \alpha \times (w_{\max} - w_{\min})$.
+
+When $\alpha = 1$: $\mu = w_{\min} + 1 \times (w_{\max} - w_{\min}) = w_{\max}$. So, only vertices whose greedy value is at least $w_{\max}$ are considered for assignment. Usually, only the vertices with the highest possible greedy value are included in the restricted candidate list. If multiple vertices have this highest value, you pick one randomly from them.
+
+This introduces randomness into the selection, even though you're only considering the best candidates. With $\alpha = 1$, you always pick from the best candidates, but if there are ties, you choose randomly among them, making the process less deterministic and more random than pure greedy.
+
+\textbf{Summary:}
+\begin{itemize}
+\item $\alpha = 0$: Pure greedy (always picks the best candidate)
+\item $\alpha = 1$: Pure random among the best candidates
+\item $0 < \alpha < 1$: Mix of greedy and random, allowing you to tune the balance between exploitation (greedy) and exploration (random)
 \item \textbf{\(\alpha\)} (\(0 \leq \alpha \leq 1\)): Controls how greedy the semi-greedy construction is. \textit{\(\alpha = 0\)} is fully greedy, \textit{\(\alpha = 1\)} is fully random. In practice, \(\alpha\) is often set to \(0.5\) to balance exploration and exploitation.
 \item \textbf{MaxIterations}: Number of iterations GRASP will run. Higher values increase quality but require more time. It is often set to a small number (e.g., 50) for practical purposes.
 \end{itemize}

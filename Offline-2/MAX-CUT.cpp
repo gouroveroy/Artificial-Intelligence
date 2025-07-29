@@ -110,14 +110,23 @@ public:
     {
         clearSets();
 
+        vector<bool> assigned(numberOfVertices + 1, false);
+
         auto edge = findMaximumWeightedEdge();
         int u_max = edge.first;
         int v_max = edge.second;
         vertexSet1.insert(u_max);
         vertexSet2.insert(v_max);
+        assigned[u_max] = true;
+        assigned[v_max] = true;
 
         for (int i = 1; i <= numberOfVertices; i++)
         {
+            if (assigned[i])
+            {
+                continue;
+            }
+
             int edgeWeightSet1 = 0;
             int edgeWeightSet2 = 0;
 
@@ -143,6 +152,8 @@ public:
             {
                 vertexSet2.insert(i);
             }
+
+            assigned[i] = true;
         }
         return getMaximumCutWeight();
     }
