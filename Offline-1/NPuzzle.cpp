@@ -17,7 +17,7 @@ public:
     /**
      * The NPuzzle constructor initializes the puzzle with the specified dimensions and initial and
      * goal boards.
-     * 
+     *
      * @param k The parameter `k` in the `NPuzzle` constructor represents the size of the puzzle board.
      * It is used to specify the dimensions of the puzzle board, which is typically a square grid with
      * k rows and k columns.
@@ -39,7 +39,7 @@ public:
 
     /**
      * The function `setHeuristicFunction` assigns a given heuristic function to a member variable.
-     * 
+     *
      * @param heuristic The `setHeuristicFunction` function takes a parameter `heuristic` which is a
      * function that accepts two parameters - both of type `vector<vector<int>> &` - and returns an
      * integer value. This function is used to set the heuristic function for a specific purpose, such
@@ -53,7 +53,7 @@ public:
     /**
      * The function `countInversions` calculates the number of inversions in a given board
      * configuration.
-     * 
+     *
      * @return The function `countInversions` returns the number of inversions in the `initialBoard`
      * vector.
      */
@@ -88,7 +88,7 @@ public:
     /**
      * The function "isSolvable" determines if a puzzle is solvable based on the number of inversions
      * and the position of the empty cell.
-     * 
+     *
      * @return The `isSolvable` function is returning a boolean value based on whether the puzzle is
      * solvable or not. It calculates the number of inversions in the puzzle and checks if the puzzle
      * is solvable based on the number of inversions and the position of the empty cell. If the puzzle
@@ -110,7 +110,7 @@ public:
     /**
      * The above function implements the A* search algorithm to find the optimal solution for a given
      * puzzle problem.
-     * 
+     *
      * @return The AStarSearch function returns a pair containing a Node object and a pair of integers.
      * The Node object represents the final state of the puzzle after performing the A* search
      * algorithm, and the pair of integers represents the number of nodes explored and expanded during
